@@ -16,6 +16,8 @@ class StonksPrediction:
         self.forecast = None
         self.forecast_period = None
         self.rmse = None
+        self.mape = None
+        self.mae = None
         self._get_data()
         self._preprocessing()
 
@@ -82,12 +84,24 @@ class StonksPrediction:
         plt.xticks(rotation=45, ha='right')
         plt.show()
 
+    ##TODO: убрать костыль с начальной датой отсчет времени
     def _get_rmse(self):
-        ##TODO: убрать костыль с начальной датой отсчет времени
         self.rmse = np.sqrt(np.mean((self._test_data.y - self.forecast[-self.forecast_period:self.forecast_period -
                                                                                              self._test_data.shape[
                                                                                                  0]].yhat) ** 2))
 
+    def _get_mape(self):
+        self.mape = np.mean((self._test_data.y - self.forecast[-self.forecast_period:self.forecast_period -
+                                                                                     self._test_data.shape[
+                                                                                         0]].yhat) / self._test_data.y) * 100
+
+    def _get_mae(self):
+        self.mae = np.mean(np.abs(self._test_data.y - self.forecast[-self.forecast_period:self.forecast_period -
+                                                                                     self._test_data.shape[
+                                                                                         0]].yhat))
+
     def get_metrix(self):
         self._get_rmse()
-        return "RMSE: " + str(self.rmse)
+        self._get_mape()
+        self._get_mae()
+        return "RMSE: " + str(self.rmse) + "\n" + "MAPE: " + str(self.mape) + "\n" + "MAE: " + str(self.mae)
