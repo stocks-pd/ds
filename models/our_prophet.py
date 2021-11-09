@@ -40,7 +40,6 @@ class OurProphet(Prophet):
     #                      uncertainty_samples,
     #                      stan_backend)
 
-
     def get_hyperparameters(self):
         return {
             "growth": self.growth,
@@ -61,14 +60,10 @@ class OurProphet(Prophet):
             "stan_backend": self.stan_backend
         }
 
-    ##TODO: учитывать праздники + доработать исполнение в режиме обучения
+    # TODO: учитывать праздники + доработать исполнение в режиме обучения
     def make_future_dataframe(self, periods, freq='D', include_history=True):
-        future = Prophet.make_future_dataframe(self, periods, freq=freq, include_history=False)
+        future = Prophet.make_future_dataframe(self, 2 * periods, freq=freq, include_history=False)
         future['day'] = future['ds'].dt.weekday
         future = future[future['day'] <= 4]
-
-        future = Prophet.make_future_dataframe(self, periods=2 * periods - future.shape[0], freq=freq,
-                                               include_history=include_history)
-        future['day'] = future['ds'].dt.weekday
-        future = future[future['day'] <= 4]
+        future = future.iloc[:periods]
         return future

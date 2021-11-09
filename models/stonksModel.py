@@ -5,6 +5,7 @@ from models.our_prophet import OurProphet
 import multiprocessing as mp
 
 
+
 class StonksModel(metaclass=ABCMeta):
     def __init__(self, company_ticket: str, api_key: str = "ZRMG7N7CVNEFA2RY"):
         """
@@ -20,19 +21,22 @@ class StonksModel(metaclass=ABCMeta):
         self.data_to_fit = self.preprocessing(self.get_data_from_api(company_ticket, api_key))
 
         # заданы на 3 года обучения и 1 год предсказания
-        self._train_size = 756
-        self._test_size = 252
+        self._train_size = 972
+        self._test_size = 90
 
         self.forecast = None
-        # self.forecast_period = None
+
         self.best_prophet = None
         self.best_hyper_parameters = None
         self.learned_prophets = None
 
-        # metrics
-        self.rmse = None
-        self.mape = None
-        self.mae = None
+        self.SMAPE = None
+
+        self.hyperparameters_dict: dict = {
+            "n_changepoints": [i for i in range(500, 560, 50)],
+            "changepoint_prior_scale": [i / 100 for i in range(150, 160, 50)],
+            "changepoint_range": [i / 100 for i in range(60, 80, 20)],
+        }
 
     @staticmethod
     def get_data_from_api(company_ticket, api_key):
@@ -86,50 +90,25 @@ class StonksModel(metaclass=ABCMeta):
         self.forecast = self.model.predict(future)
 
     @staticmethod
-    def get_rmse(y: np.array, y_pred: np.array):
+    def get_smape(y: np.array, y_pred: np.array):
         """
-
+        Выдает значения метрики sMAPE
         :param y:
         :param y_pred:
         :return:
         """
-        return np.sqrt(np.mean((y - y_pred) ** 2))
-
-    @staticmethod
-    def get_mape(y: np.array, y_pred: np.array):
-        """
-
-        :param y:
-        :param y_pred:
-        :return:
-        """
-        return np.mean((y - y_pred) / y) * 100
-
-    @staticmethod
-    def get_mae(y: np.array, y_pred: np.array):
-        """
-
-        :param y:
-        :param y_pred:
-        :return:
-        """
-        return np.mean(np.abs(y - y_pred))
+        return np.mean(2 * abs(y - y_pred) / (y + y_pred)) * 100
 
     # def get_metrics_sum(self, y, y_pred):
     #     return self.get_mape(y, y_pred) + self.get_rmse(y, y_pred) + self.get_mae(y, y_pred)
 
     # TODO: придумать как задавать интервал, из которого выбираются гиперпараметры
-    @staticmethod
-    def _create_dict_of_hyperparameters_with_values():
+
+    def _create_dict_of_hyperparameters_with_values(self):
         hyperparameters_combined = []
-        hyperparameters_dict = {
-            "n_changepoints": [i for i in range(0, 210, 40)],
-            "changepoint_prior_scale": [i / 100 for i in range(0, 250, 50)],
-            "changepoint_range": [i / 100 for i in range(0, 100, 20)],
-        }
-        for n_changepoints in hyperparameters_dict.get("n_changepoints"):
-            for changepoint_prior_scale in hyperparameters_dict.get("changepoint_prior_scale"):
-                for changepoint_range in hyperparameters_dict.get("changepoint_range"):
+        for n_changepoints in self.hyperparameters_dict.get("n_changepoints"):
+            for changepoint_prior_scale in self.hyperparameters_dict.get("changepoint_prior_scale"):
+                for changepoint_range in self.hyperparameters_dict.get("changepoint_range"):
                     hyperparameters_combined.append({"n_changepoints": n_changepoints,
                                                      "changepoint_prior_scale": changepoint_prior_scale,
                                                      "changepoint_range": changepoint_range})
@@ -148,12 +127,12 @@ class StonksModel(metaclass=ABCMeta):
                              changepoint_range=item.get("changepoint_range"))
         prophet.add_seasonality(name='monthly', period=21, fourier_order=3)
         prophet.fit(train_data)
-        future = prophet.make_future_dataframe(periods=self._test_size, freq='D', include_history=True)
+        future = prophet.make_future_dataframe(periods=self._test_size, freq='D', include_history=False)
         forecast = prophet.predict(future)
-        rmse = self.get_rmse(test_data.to_numpy(), forecast.yhat.to_numpy())
-        return {"prophet": prophet, "rmse": rmse}
+        metric = self.get_smape(test_data.y.to_numpy(), forecast.yhat.to_numpy())
+        return {"prophet": prophet, "metric": metric}
 
-    def get_best_hyperparameter_and_prophet(self):
+    def get_best_hyperparameter_and_prophet(self, set_best_prophet_to_model: False):
         """
 
         :return: pass
@@ -166,9 +145,11 @@ class StonksModel(metaclass=ABCMeta):
         self.learned_prophets = pool.map(self._fit_predict_with_get_metrix_score_to_update_hyperparameters,
                                          hyperparameters_combined)
 
-        self.learned_prophets.sort(key=lambda prophet: prophet.get("rmse"))
+        self.learned_prophets.sort(key=lambda prophet: prophet.get("metric"))
         self.best_prophet = self.learned_prophets[0].get("prophet")
         self.best_hyper_parameters = self.best_prophet.get_hyperparameters()
+        if set_best_prophet_to_model:
+            self.model = self.best_prophet
 
     @abstractmethod
     def get_best_prediction(self):
