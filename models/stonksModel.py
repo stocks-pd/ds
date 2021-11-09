@@ -1,137 +1,131 @@
+from abc import ABCMeta, abstractmethod
 import pandas as pd
 import numpy as np
-from matplotlib import pyplot as plt
 from models.our_prophet import OurProphet
 import multiprocessing as mp
 
 
-class StonksModel:
-    def __init__(self, company_ticket: str, api_key: str = "ZRMG7N7CVNEFA2RY", model_type: str = "prophet"):
+class StonksModel(metaclass=ABCMeta):
+    def __init__(self, company_ticket: str, api_key: str = "ZRMG7N7CVNEFA2RY"):
+        """
 
+        :param company_ticket:
+        :param api_key:
+        """
         self.api_key = api_key
         self.company_ticket = company_ticket.upper()
 
-        # self._models = {"prophet": Prophet}
-
         self.model = None
 
-        self._data_to_fit = None
-        ##заданы на 3 года обучения и 1 год предсказания
+        self.data_to_fit = self.preprocessing(self.get_data_from_api(company_ticket, api_key))
+
+        # заданы на 3 года обучения и 1 год предсказания
         self._train_size = 756
         self._test_size = 252
 
         self.forecast = None
-        self.forecast_period = None
+        # self.forecast_period = None
+        self.best_prophet = None
+        self.best_hyper_parameters = None
+        self.learned_prophets = None
 
-        ##metrix
+        # metrics
         self.rmse = None
         self.mape = None
         self.mae = None
 
-        self._get_data()
-        self._preprocessing()
-        self._train_test_split()
-
-    def _get_data(self):
-        query = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}&outputsize=full&apikey={}&datatype=csv'.format(
-            self.company_ticket, self.api_key)
-        self._data_to_fit = pd.read_csv(query)
-
-    def _preprocessing(self):
-        newDataFrame = pd.DataFrame(columns=["ds", "y"])
-        newDataFrame.ds = pd.to_datetime(self._data_to_fit.timestamp)
-        newDataFrame.y = self._data_to_fit.close
-        self._data_to_fit = newDataFrame
-
-    def _train_test_split(self):
-        self._train_data = self._data_to_fit[self._test_size:self._test_size + self._train_size]
-        self._test_data = self._data_to_fit[:self._test_size]
-
-    ##TODO: учитывать праздники + доработать исполнение в режиме обучения
-    def _generate_future_dates(self, days: int):
-        future = self.model.make_future_dataframe(periods=days)
-        future['day'] = future['ds'].dt.weekday
-        future = future[future['day'] <= 4]
-        future = future[future['ds'] >= self._test_data.loc[0, "ds"]]
-
-        future = self.model.make_future_dataframe(periods=2 * days - future.shape[0])
-        future['day'] = future['ds'].dt.weekday
-        future = future[future['day'] <= 4]
-        return future
-
-    def fit(self, n_changepoints: int = None, changepoint_prior_scale: float = None, changepoint_range: float = None,
-            fourier_order: int = None):
+    @staticmethod
+    def get_data_from_api(company_ticket, api_key):
         """
+
+        :param company_ticket:
+        :param api_key:
+        :return:
+        """
+        query = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}' \
+                '&outputsize=full&apikey={}&datatype=csv'.format(company_ticket, api_key)
+        return pd.read_csv(query)
+
+    @staticmethod
+    def preprocessing(df):
+        """
+
+        :param df:
+        :return:
+        """
+        newDataFrame = pd.DataFrame(columns=["ds", "y"])
+        newDataFrame.ds = pd.to_datetime(df.timestamp)
+        newDataFrame.y = df.close
+        return newDataFrame
+
+    def fit(self, data: pd.DataFrame, n_changepoints: int = None, changepoint_prior_scale: float = None,
+            changepoint_range: float = None, fourier_order: int = None):
+        """
+        :param data:
+        :param n_changepoints:
         :param changepoint_prior_scale:
         :param changepoint_range:
-        :param days_slice:
+        :param fourier_order:
         :return:
         """
         self.model = OurProphet(daily_seasonality=True, n_changepoints=n_changepoints,
                                 changepoint_prior_scale=changepoint_prior_scale,
                                 changepoint_range=changepoint_range)
         self.model.add_seasonality(name='monthly', period=21, fourier_order=fourier_order)
-        self.model.fit(self._train_data)
+        self.model.fit(data)
 
-    ##TODO: поправить путаницу с размерностями обучения и теста
-    def predict(self, days: int = 90):
+    def predict(self, periods: int = 90, freq="D", include_history=False):
         """
-        :param date_period:
+
+        :param periods:
+        :param freq:
+        :param include_history:
         :return:
         """
-        future = self._generate_future_dates(days)
-        self.forecast_period = future.shape[0]
+        future = self.model.make_future_dataframe(periods, freq, include_history)
         self.forecast = self.model.predict(future)
 
-        self.mape = self._get_mape()
-        self.mae = self._get_mae()
-        self.rmse = self._get_rmse()
-
-    def print_prophet_predict(self, add_changepoints: bool = False):
+    @staticmethod
+    def get_rmse(y: np.array, y_pred: np.array):
         """
-        :param add_changepoints:
+
+        :param y:
+        :param y_pred:
         :return:
         """
-        fig = self.model.plot(self.forecast)
-        # if add_changepoints:
-        #     a = add_changepoints_to_plot(fig.gca(), self.model, self.forecast)
+        return np.sqrt(np.mean((y - y_pred) ** 2))
 
-    def print_predict_with_real_data(self):
+    @staticmethod
+    def get_mape(y: np.array, y_pred: np.array):
         """
-        :param real_data:
-        :param days_slice:
+
+        :param y:
+        :param y_pred:
         :return:
         """
-        forecast = self.forecast.merge(self._test_data, on="ds", how="left")
-        plt.plot(forecast.ds, forecast.y, color="red")
-        plt.plot(forecast.ds, forecast.yhat, color="black")
-        plt.plot(forecast.ds, forecast.yhat_lower, color="blue")
-        plt.plot(forecast.ds, forecast.yhat_upper, color="blue")
-        plt.xticks(rotation=45, ha='right')
-        plt.show()
+        return np.mean((y - y_pred) / y) * 100
 
-    def _get_rmse(self):
-        return np.sqrt(np.mean((self._test_data.y - self.forecast[-self.forecast_period:].yhat) ** 2))
+    @staticmethod
+    def get_mae(y: np.array, y_pred: np.array):
+        """
 
-    def _get_mape(self):
-        return np.mean((self._test_data.y - self.forecast[-self.forecast_period:].yhat) / self._test_data.y) * 100
+        :param y:
+        :param y_pred:
+        :return:
+        """
+        return np.mean(np.abs(y - y_pred))
 
-    def _get_mae(self):
-        return np.mean(np.abs(self._test_data.y - self.forecast[-self.forecast_period:].yhat))
+    # def get_metrics_sum(self, y, y_pred):
+    #     return self.get_mape(y, y_pred) + self.get_rmse(y, y_pred) + self.get_mae(y, y_pred)
 
-    def _get_metrix_sum(self):
-        return self._get_mape() + self._get_rmse() + self._get_mae()
-
-    def get_metrix(self):
-        return "RMSE: " + str(self.rmse) + "\n" + "MAPE: " + str(self.mape) + "%" + "\n" + "MAE: " + str(self.mae)
-
+    # TODO: придумать как задавать интервал, из которого выбираются гиперпараметры
     @staticmethod
     def _create_dict_of_hyperparameters_with_values():
         hyperparameters_combined = []
         hyperparameters_dict = {
-            "n_changepoints": [i for i in range(0, 210, 10)],
+            "n_changepoints": [i for i in range(0, 210, 40)],
             "changepoint_prior_scale": [i / 100 for i in range(0, 250, 50)],
-            "changepoint_range": [i / 100 for i in range(0, 100, 5)],
+            "changepoint_range": [i / 100 for i in range(0, 100, 20)],
         }
         for n_changepoints in hyperparameters_dict.get("n_changepoints"):
             for changepoint_prior_scale in hyperparameters_dict.get("changepoint_prior_scale"):
@@ -142,24 +136,29 @@ class StonksModel:
         return hyperparameters_combined
 
     def _fit_predict_with_get_metrix_score_to_update_hyperparameters(self, item):
+        """
+
+        :param item:
+        :return:
+        """
+        train_data = self.data_to_fit[self._test_size:self._test_size + self._train_size]
+        test_data = self.data_to_fit[:self._test_size]
         prophet = OurProphet(n_changepoints=item.get("n_changepoints"),
                              changepoint_prior_scale=item.get("changepoint_prior_scale"),
                              changepoint_range=item.get("changepoint_range"))
         prophet.add_seasonality(name='monthly', period=21, fourier_order=3)
-        prophet.fit(self._train_data)
-        future = prophet.make_future_dataframe(periods=self._test_size)
-        future['day'] = future['ds'].dt.weekday
-        future = future[future['day'] <= 4]
-        future = future[future['ds'] >= self._test_data.loc[0, "ds"]]
+        prophet.fit(train_data)
+        future = prophet.make_future_dataframe(periods=self._test_size, freq='D', include_history=True)
+        forecast = prophet.predict(future)
+        rmse = self.get_rmse(test_data.to_numpy(), forecast.yhat.to_numpy())
+        return {"prophet": prophet, "rmse": rmse}
 
-        future = prophet.make_future_dataframe(periods=2 * self._test_size - future.shape[0])
-        future['day'] = future['ds'].dt.weekday
-        future = future[future['day'] <= 4]
-        prophet.predict(future, self._test_data)
-        return prophet
+    def get_best_hyperparameter_and_prophet(self):
+        """
 
-    def _update_hyperparameters(self):
-        ##TODO: дополнить список гиперпараметров
+        :return: pass
+        """
+        # TODO: дополнить список гиперпараметров
         hyperparameters_combined = self._create_dict_of_hyperparameters_with_values()
 
         pool = mp.Pool()
@@ -167,13 +166,10 @@ class StonksModel:
         self.learned_prophets = pool.map(self._fit_predict_with_get_metrix_score_to_update_hyperparameters,
                                          hyperparameters_combined)
 
-        self.learned_prophets.sort(key=lambda prophet: prophet.rmse)
-        self.best_prophet = self.learned_prophets[0]
-        self.best_hyperparameters = self.best_prophet.get_hyperparameters()
+        self.learned_prophets.sort(key=lambda prophet: prophet.get("rmse"))
+        self.best_prophet = self.learned_prophets[0].get("prophet")
+        self.best_hyper_parameters = self.best_prophet.get_hyperparameters()
 
+    @abstractmethod
     def get_best_prediction(self):
-        # self._train_test_split()
-        self._update_hyperparameters()
-        self.forecast = self.best_prophet._output_forecast
-        self.print_predict_with_real_data()
-        print(self.get_metrix())
+        return
