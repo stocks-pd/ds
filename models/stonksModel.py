@@ -1,9 +1,11 @@
 from abc import ABCMeta, abstractmethod
 import pandas as pd
 import numpy as np
+from prophet.diagnostics import cross_validation, performance_metrics
+
 from models.our_prophet import OurProphet
 import multiprocessing as mp
-
+import itertools
 
 
 class StonksModel(metaclass=ABCMeta):
@@ -20,24 +22,28 @@ class StonksModel(metaclass=ABCMeta):
 
         self.data_to_fit = self.preprocessing(self.get_data_from_api(company_ticket, api_key))
 
-        # заданы на 3 года обучения и 1 год предсказания
         self._train_size = 972
         self._test_size = 90
 
         self.forecast = None
 
         self.best_prophet = None
-        self.best_hyper_parameters = None
+        self.best_parameters = None
         self.learned_prophets = None
 
         self.SMAPE = None
 
         self.hyperparameters_dict: dict = {
+            "seasonality_mode": ["additive", "multiplicative"],
             "n_changepoints": [i for i in range(500, 560, 50)],
-            "changepoint_prior_scale": [i / 100 for i in range(150, 160, 50)],
-            "changepoint_range": [i / 100 for i in range(60, 80, 20)],
+            "changepoint_prior_scale": [i / 1000 for i in range(1, 501, 100)],
+            "seasonality_prior_scale": [i / 100 for i in range(1, 1001, 200)],
+            "holidays_prior_scale": [i / 100 for i in range(1, 1001, 200)],
+            "changepoint_range": [i / 100 for i in range(80, 96, 5)],
+            "growth": ["linear", "logistic"]
         }
 
+    # TODO: добавить обработку других типов активов
     @staticmethod
     def get_data_from_api(company_ticket, api_key):
         """
@@ -62,8 +68,7 @@ class StonksModel(metaclass=ABCMeta):
         newDataFrame.y = df.close
         return newDataFrame
 
-    def fit(self, data: pd.DataFrame, n_changepoints: int = None, changepoint_prior_scale: float = None,
-            changepoint_range: float = None, fourier_order: int = None):
+    def fit(self, data, parameters):
         """
         :param data:
         :param n_changepoints:
@@ -72,10 +77,10 @@ class StonksModel(metaclass=ABCMeta):
         :param fourier_order:
         :return:
         """
-        self.model = OurProphet(daily_seasonality=True, n_changepoints=n_changepoints,
-                                changepoint_prior_scale=changepoint_prior_scale,
-                                changepoint_range=changepoint_range)
-        self.model.add_seasonality(name='monthly', period=21, fourier_order=fourier_order)
+        self.model = OurProphet(**parameters)
+        self.model.add_seasonality(name='monthly', period=21, fourier_order=3)
+        self.model.add_seasonality('quarterly', period=63, fourier_order=8)
+        self.model.add_country_holidays(country_name='US')
         self.model.fit(data)
 
     def predict(self, periods: int = 90, freq="D", include_history=False):
@@ -99,57 +104,44 @@ class StonksModel(metaclass=ABCMeta):
         """
         return np.mean(2 * abs(y - y_pred) / (y + y_pred)) * 100
 
-    # def get_metrics_sum(self, y, y_pred):
-    #     return self.get_mape(y, y_pred) + self.get_rmse(y, y_pred) + self.get_mae(y, y_pred)
-
-    # TODO: придумать как задавать интервал, из которого выбираются гиперпараметры
-
-    def _create_dict_of_hyperparameters_with_values(self):
-        hyperparameters_combined = []
-        for n_changepoints in self.hyperparameters_dict.get("n_changepoints"):
-            for changepoint_prior_scale in self.hyperparameters_dict.get("changepoint_prior_scale"):
-                for changepoint_range in self.hyperparameters_dict.get("changepoint_range"):
-                    hyperparameters_combined.append({"n_changepoints": n_changepoints,
-                                                     "changepoint_prior_scale": changepoint_prior_scale,
-                                                     "changepoint_range": changepoint_range})
-        return hyperparameters_combined
-
     def _fit_predict_with_get_metrix_score_to_update_hyperparameters(self, item):
         """
 
         :param item:
         :return:
         """
+
         train_data = self.data_to_fit[self._test_size:self._test_size + self._train_size]
-        test_data = self.data_to_fit[:self._test_size]
-        prophet = OurProphet(n_changepoints=item.get("n_changepoints"),
-                             changepoint_prior_scale=item.get("changepoint_prior_scale"),
-                             changepoint_range=item.get("changepoint_range"))
+
+        cutoffs = pd.to_datetime(['2018-01-01', '2019-01-01', '2020-01-01'])
+        prophet = OurProphet(**item)
         prophet.add_seasonality(name='monthly', period=21, fourier_order=3)
+        prophet.add_seasonality('quarterly', period=63, fourier_order=8)
+        prophet.add_country_holidays(country_name='US')
         prophet.fit(train_data)
-        future = prophet.make_future_dataframe(periods=self._test_size, freq='D', include_history=False)
-        forecast = prophet.predict(future)
-        metric = self.get_smape(test_data.y.to_numpy(), forecast.yhat.to_numpy())
-        return {"prophet": prophet, "metric": metric}
+        df_cv = cross_validation(prophet, cutoffs=cutoffs, horizon='90 days')
+        df_p = performance_metrics(df_cv, rolling_window=1)
+        return {"prophet": prophet, "metric": df_p['smape'].values[0]}
 
-    def get_best_hyperparameter_and_prophet(self, set_best_prophet_to_model: False):
+    def get_best_parameters(self):
         """
 
-        :return: pass
+        :return:
         """
-        # TODO: дополнить список гиперпараметров
-        hyperparameters_combined = self._create_dict_of_hyperparameters_with_values()
+        all_parameters = [dict(zip(self.hyperparameters_dict.keys(), v)) for v in
+                          itertools.product(*self.hyperparameters_dict.values())]
+        smapes = []
 
         pool = mp.Pool()
 
-        self.learned_prophets = pool.map(self._fit_predict_with_get_metrix_score_to_update_hyperparameters,
-                                         hyperparameters_combined)
+        pool.map(self._fit_predict_with_get_metrix_score_to_update_hyperparameters, all_parameters)
 
-        self.learned_prophets.sort(key=lambda prophet: prophet.get("metric"))
-        self.best_prophet = self.learned_prophets[0].get("prophet")
-        self.best_hyper_parameters = self.best_prophet.get_hyperparameters()
-        if set_best_prophet_to_model:
-            self.model = self.best_prophet
+        tuning_results = pd.DataFrame(all_parameters)
+        tuning_results['smapes'] = smapes
+        print(tuning_results)
+
+        self.best_parameters = all_parameters[np.argmin(smapes)]
+        self.best_smape = min(smapes)
 
     @abstractmethod
     def get_best_prediction(self):

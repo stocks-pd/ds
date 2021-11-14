@@ -16,7 +16,8 @@ class LearnStonksModel(StonksModel):
 
     def get_best_prediction(self):
         self._train_test_split()
-        self.get_best_hyperparameter_and_prophet(True)
+        params = self.get_best_parameters()
+        self.fit(self._train_data, **params)
         future = self.model.make_future_dataframe(self._test_data.shape[0], include_history=True)
         self.forecast = self.best_prophet.predict(future)
         self.SMAPE = self.get_smape(self._test_data.y.to_numpy(), self.forecast.yhat.to_numpy())

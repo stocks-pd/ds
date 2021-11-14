@@ -5,40 +5,6 @@ from prophet.plot import add_changepoints_to_plot
 
 
 class OurProphet(Prophet):
-    # def __init__(self,
-    #              growth='linear',
-    #              changepoints=None,
-    #              n_changepoints=25,
-    #              changepoint_range=0.8,
-    #              yearly_seasonality='auto',
-    #              weekly_seasonality='auto',
-    #              daily_seasonality='auto',
-    #              holidays=None,
-    #              seasonality_mode='additive',
-    #              seasonality_prior_scale=10.0,
-    #              holidays_prior_scale=10.0,
-    #              changepoint_prior_scale=0.05,
-    #              mcmc_samples=0,
-    #              interval_width=0.80,
-    #              uncertainty_samples=1000,
-    #              stan_backend=None):
-    #     Prophet.__init__(self,
-    #                      growth,
-    #                      changepoints,
-    #                      n_changepoints,
-    #                      changepoint_range,
-    #                      yearly_seasonality,
-    #                      weekly_seasonality,
-    #                      daily_seasonality,
-    #                      holidays,
-    #                      seasonality_mode,
-    #                      seasonality_prior_scale,
-    #                      holidays_prior_scale,
-    #                      changepoint_prior_scale,
-    #                      mcmc_samples,
-    #                      interval_width,
-    #                      uncertainty_samples,
-    #                      stan_backend)
 
     def get_hyperparameters(self):
         return {
@@ -60,7 +26,7 @@ class OurProphet(Prophet):
             "stan_backend": self.stan_backend
         }
 
-    # TODO: учитывать праздники + доработать исполнение в режиме обучения
+    # TODO: учитывать праздники
     def make_future_dataframe(self, periods, freq='D', include_history=True):
         future = Prophet.make_future_dataframe(self, 2 * periods, freq=freq, include_history=False)
         future['day'] = future['ds'].dt.weekday
