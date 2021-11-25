@@ -1,10 +1,9 @@
-import numpy as np
-import pandas as pd
+import itertools
 from prophet import Prophet
-from prophet.plot import add_changepoints_to_plot
+from stonks_model.src.models.imodel import IModel
 
 
-class OurProphet(Prophet):
+class OurProphet(Prophet, IModel):
 
     def get_hyperparameters(self):
         return {
@@ -25,6 +24,19 @@ class OurProphet(Prophet):
             "uncertainty_samples": self.uncertainty_samples,
             "stan_backend": self.stan_backend
         }
+
+    def get_params_grid(self):
+        params = {
+            "seasonality_mode": ["additive", "multiplicative"],
+            "n_changepoints": [i for i in range(300, 510, 50)],
+            "changepoint_prior_scale": [i / 1000 for i in range(1, 501, 100)],
+            "seasonality_prior_scale": [i / 100 for i in range(1, 1001, 200)],
+            "holidays_prior_scale": [i / 100 for i in range(1, 1001, 200)],
+            "changepoint_range": [i / 100 for i in range(80, 96, 5)],
+            "growth": ["linear", "logistic"]
+        }
+        return [dict(zip(params.keys(), v)) for v in
+                itertools.product(*params.values())]
 
     # TODO: учитывать праздники
     def make_future_dataframe(self, periods, freq='D', include_history=True):

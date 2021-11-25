@@ -1,10 +1,13 @@
 from api.stonks_model.src.models.stonksModel import StonksModel
 from matplotlib import pyplot as plt
+import multiprocessing as mp
+import itertools
 
 
 class LearnStonksModel(StonksModel):
     def __init__(self, company_ticker: str, api_key: str = "ZRMG7N7CVNEFA2RY"):
         StonksModel.__init__(self, company_ticker, api_key)
+        self.data_to_fit = self.preprocessing(self.get_data_from_api(company_ticker, api_key))
         self._train_test_split()
 
     def predict(self, periods: int = 90, freq="D", include_history=False):
@@ -64,3 +67,19 @@ class LearnStonksModel(StonksModel):
 
     def print_params(self, prophet):
         print(*prophet.get_hyperparameters)
+
+    def get_best_parameters(self):
+        """
+
+        :return:
+        """
+        all_parameters = [dict(zip(self.hyperparameters_dict.keys(), v)) for v in
+                          itertools.product(*self.hyperparameters_dict.values())]
+
+        pool = mp.Pool()
+
+        self.learned_prophets = pool.map(self._fit_predict_with_get_metrix_score_to_update_hyperparameters,
+                                         all_parameters)
+
+        self.best_prophet = self.learned_prophets[0].get("prophet")
+        self.best_hyper_parameters = self.best_prophet.get_hyperparameters()

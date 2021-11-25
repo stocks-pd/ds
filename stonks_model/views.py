@@ -12,6 +12,7 @@ def predict(request, tiker, periods):
 
 
 def fit(request):
+    api_model = ApiStonksModel
     return HttpResponse("123")
     # model = LearnStonksModel("POOL")
     # model.get_best_prediction()
