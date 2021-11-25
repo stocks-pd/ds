@@ -1,12 +1,12 @@
-from api.stonks_model.src.models.stonksModel import StonksModel
+from stonks_model.src.models.baseStonksModel import BaseStonksModel
 from matplotlib import pyplot as plt
 import multiprocessing as mp
 import itertools
 
 
-class LearnStonksModel(StonksModel):
-    def __init__(self, company_ticker: str, api_key: str = "ZRMG7N7CVNEFA2RY"):
-        StonksModel.__init__(self, company_ticker, api_key)
+class LearnStonksModel(BaseStonksModel):
+    def __init__(self, estimator: str = "OurProphet", api_key: str = "ZRMG7N7CVNEFA2RY"):
+        StonksModel.__init__(self, estimator, api_key)
         self.data_to_fit = self.preprocessing(self.get_data_from_api(company_ticker, api_key))
         self._train_test_split()
 

@@ -1,6 +1,7 @@
 import itertools
 from prophet import Prophet
 from stonks_model.src.models.imodel import IModel
+import pandas as pd
 
 
 class OurProphet(Prophet, IModel):
@@ -25,7 +26,14 @@ class OurProphet(Prophet, IModel):
             "stan_backend": self.stan_backend
         }
 
-    def get_params_grid(self):
+    @staticmethod
+    def get_param_grid(estimators_dict: dict, train_data: pd.DataFrame, test_data: pd.DataFrame) -> list:
+        """
+
+        :param estimators_dict:
+        :param train_data:
+        :type test_data: object
+        """
         params = {
             "seasonality_mode": ["additive", "multiplicative"],
             "n_changepoints": [i for i in range(300, 510, 50)],
@@ -33,7 +41,10 @@ class OurProphet(Prophet, IModel):
             "seasonality_prior_scale": [i / 100 for i in range(1, 1001, 200)],
             "holidays_prior_scale": [i / 100 for i in range(1, 1001, 200)],
             "changepoint_range": [i / 100 for i in range(80, 96, 5)],
-            "growth": ["linear", "logistic"]
+            "growth": ["linear", "logistic"],
+            "estimator": estimators_dict,
+            "train_data": train_data,
+            "test_data": test_data
         }
         return [dict(zip(params.keys(), v)) for v in
                 itertools.product(*params.values())]

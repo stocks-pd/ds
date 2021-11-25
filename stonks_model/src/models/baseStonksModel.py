@@ -1,11 +1,12 @@
 from abc import ABCMeta, abstractmethod
 import pandas as pd
 import numpy as np
+from stonks_model.src.models.imodel import IModel
 
 from stonks_model.src.models.our_prophet import OurProphet
 
 
-class StonksModel(metaclass=ABCMeta):
+class BaseStonksModel(metaclass=ABCMeta):
     def __init__(self, estimator: str = "OurProphet", api_key: str = "ZRMG7N7CVNEFA2RY"):
         """
 
@@ -19,16 +20,8 @@ class StonksModel(metaclass=ABCMeta):
         except KeyError:
             raise Exception("Указан неверный тип модели")
 
-        self._train_size = 972
-        self._test_size = 90
-
         self.forecast = None
 
-        self.best_model = None
-        self.best_parameters = None
-        self.learned_models = None
-
-        self.score = None
 
     @staticmethod
     def get_data_from_api(company_ticker, api_key):
@@ -90,28 +83,6 @@ class StonksModel(metaclass=ABCMeta):
         """
         return np.mean(2 * abs(y - y_pred) / (y + y_pred)) * 100
 
-    def _fit_predict_with_get_metrix_score_to_update_hyperparameters(self, item):
-        """
 
-        :param item:
-        :return:
-        """
 
-        train_data = self.data_to_fit[self._test_size:self._test_size + self._train_size]
-        test_data = self.data_to_fit[:self._test_size]
 
-        prophet = OurProphet(**item)
-        prophet.add_seasonality(name='monthly', period=21, fourier_order=3)
-        prophet.add_seasonality('quarterly', period=63, fourier_order=8)
-        prophet.add_country_holidays(country_name='US')
-        prophet.fit(train_data)
-
-        future = prophet.make_future_dataframe(self._test_size)
-        forecast = prophet.predict(future)
-        smape = self.get_smape(test_data.y, forecast.y)
-
-        return {"prophet": prophet, "metric": smape}
-
-    @abstractmethod
-    def get_best_parameters(self):
-        pass
