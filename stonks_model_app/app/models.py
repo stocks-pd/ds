@@ -45,3 +45,11 @@ class ProphetParam(models.Model):
             "uncertainty_samples": self.uncertainty_samples,
             # "stan_backend": self.stan_backend
         }
+
+
+class Recommendations(models.Model):
+    date_of_recommendation = models.DateTimeField("Дата подборки", default=timezone.now())
+    tiker = models.CharField("Тикер", max_length=10)
+    period = models.CharField("Период прогноза", max_length=10)
+    price = models.FloatField("Прогнозная цена")
+    risk = models.FloatField("Риск")

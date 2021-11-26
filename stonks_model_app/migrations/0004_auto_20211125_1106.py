@@ -8,7 +8,7 @@ from django.utils.timezone import utc
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('stonks_model', '0003_alter_prophetparam_find_date'),
+        ('stonks_model_app', '0003_alter_prophetparam_find_date'),
     ]
 
     operations = [

@@ -1,6 +1,6 @@
 import itertools
 from prophet import Prophet
-from stonks_model.src.models.imodel import IModel
+from .interfaces.imodel import IModel
 import pandas as pd
 
 
@@ -27,7 +27,7 @@ class OurProphet(Prophet, IModel):
         }
 
     @staticmethod
-    def get_param_grid(estimators_dict: dict, train_data: pd.DataFrame, test_data: pd.DataFrame) -> list:
+    def get_params_grid(estimators_dict: dict, train_data: pd.DataFrame, test_data: pd.DataFrame) -> list:
         """
 
         :param estimators_dict:

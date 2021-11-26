@@ -1,13 +1,13 @@
-from abc import ABCMeta, abstractmethod
+from abc import ABCMeta
 import pandas as pd
 import numpy as np
-from stonks_model.src.models.imodel import IModel
+from stonks_model_app.app_settings import *
 
-from stonks_model.src.models.our_prophet import OurProphet
+from stonks_model_app.models.estimators.our_prophet import OurProphet
 
 
 class BaseStonksModel(metaclass=ABCMeta):
-    def __init__(self, estimator: str = "OurProphet", api_key: str = "ZRMG7N7CVNEFA2RY"):
+    def __init__(self, estimator: str = "OurProphet", api_key: str = ALPHA_KEY):
         """
 
         :param company_ticker:
@@ -16,12 +16,9 @@ class BaseStonksModel(metaclass=ABCMeta):
         self.api_key = api_key
         self.estimators_dict = {"OurProphet": OurProphet}
         try:
-            self.model = self.estimators_dict.get(estimator)
+            self.estimator = self.estimators_dict.get(estimator)
         except KeyError:
             raise Exception("Указан неверный тип модели")
-
-        self.forecast = None
-
 
     @staticmethod
     def get_data_from_api(company_ticker, api_key):
@@ -31,8 +28,7 @@ class BaseStonksModel(metaclass=ABCMeta):
         :param api_key:
         :return:
         """
-        query = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}' \
-                '&outputsize=full&apikey={}&datatype=csv'.format(company_ticker, api_key)
+        query = ALPHA_GET_TIKER_HISTORY.format(company_ticker, api_key)
         return pd.read_csv(query)
 
     @staticmethod
@@ -56,7 +52,7 @@ class BaseStonksModel(metaclass=ABCMeta):
         :param fourier_order:
         :return:
         """
-        self.model = OurProphet(**parameters)
+        self.model = self.estimator(**parameters)
         self.model.add_seasonality(name='monthly', period=21, fourier_order=3)
         self.model.add_seasonality('quarterly', period=63, fourier_order=8)
         self.model.add_country_holidays(country_name='US')
@@ -71,7 +67,11 @@ class BaseStonksModel(metaclass=ABCMeta):
         :return:
         """
         future = self.model.make_future_dataframe(periods, freq, include_history)
-        self.forecast = self.model.predict(future)
+        return self.model.predict(future)
+
+    def fit_predict(self, data, parameters, periods: int = 90, freq="D", include_history=False):
+        self.fit(data, parameters)
+        return self.predict(periods, freq, include_history)
 
     @staticmethod
     def get_smape(y: np.array, y_pred: np.array):
@@ -82,7 +82,3 @@ class BaseStonksModel(metaclass=ABCMeta):
         :return:
         """
         return np.mean(2 * abs(y - y_pred) / (y + y_pred)) * 100
-
-
-
-

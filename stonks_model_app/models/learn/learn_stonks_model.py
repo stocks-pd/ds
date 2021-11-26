@@ -1,4 +1,4 @@
-from stonks_model.src.models.baseStonksModel import BaseStonksModel
+from stonks_model_app.models.baseStonksModel import BaseStonksModel
 from matplotlib import pyplot as plt
 import multiprocessing as mp
 import itertools
