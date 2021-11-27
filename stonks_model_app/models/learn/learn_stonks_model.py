@@ -1,10 +1,13 @@
-from models.stonksModel import StonksModel
+from stonks_model_app.models.baseStonksModel import BaseStonksModel
 from matplotlib import pyplot as plt
+import multiprocessing as mp
+import itertools
 
 
-class LearnStonksModel(StonksModel):
-    def __init__(self, company_ticket: str, api_key: str = "ZRMG7N7CVNEFA2RY"):
-        StonksModel.__init__(self, company_ticket, api_key)
+class LearnStonksModel(BaseStonksModel):
+    def __init__(self, estimator: str = "OurProphet", api_key: str = "ZRMG7N7CVNEFA2RY"):
+        StonksModel.__init__(self, estimator, api_key)
+        self.data_to_fit = self.preprocessing(self.get_data_from_api(company_ticker, api_key))
         self._train_test_split()
 
     def predict(self, periods: int = 90, freq="D", include_history=False):
@@ -16,12 +19,14 @@ class LearnStonksModel(StonksModel):
 
     def get_best_prediction(self):
         self._train_test_split()
-        self.get_best_hyperparameter_and_prophet(True)
+        self.get_best_parameters()
+        # self.fit(self._train_data, **params)
         future = self.model.make_future_dataframe(self._test_data.shape[0], include_history=True)
         self.forecast = self.best_prophet.predict(future)
         self.SMAPE = self.get_smape(self._test_data.y.to_numpy(), self.forecast.yhat.to_numpy())
         self.print_all_timeline_predict_with_real_data()
         print(self.get_metrics())
+        self.print_params(self.best_parameters)
 
     def print_predict_with_real_data(self):
         forecast = self.forecast.merge(self._test_data, on="ds", how="left")
@@ -59,3 +64,22 @@ class LearnStonksModel(StonksModel):
 
     def get_metrics(self):
         return "sMAPE: " + str(round(self.SMAPE)) + "%"
+
+    def print_params(self, prophet):
+        print(*prophet.get_hyperparameters)
+
+    def get_best_parameters(self):
+        """
+
+        :return:
+        """
+        all_parameters = [dict(zip(self.hyperparameters_dict.keys(), v)) for v in
+                          itertools.product(*self.hyperparameters_dict.values())]
+
+        pool = mp.Pool()
+
+        self.learned_prophets = pool.map(self._fit_predict_with_get_metrix_score_to_update_hyperparameters,
+                                         all_parameters)
+
+        self.best_prophet = self.learned_prophets[0].get("prophet")
+        self.best_hyper_parameters = self.best_prophet.get_hyperparameters()
