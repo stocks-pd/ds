@@ -1,4 +1,4 @@
-from stonks_model_app.models.estimators.interfaces.imodel import IModel
+from ..estimators.interfaces.imodel import IModel
 from abc import ABCMeta, abstractmethod
 import pandas as pd
 

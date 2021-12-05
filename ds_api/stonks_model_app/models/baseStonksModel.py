@@ -1,9 +1,8 @@
 from abc import ABCMeta
 import pandas as pd
 import numpy as np
-from stonks_model_app.app_settings import *
-
-from stonks_model_app.models.estimators.our_prophet import OurProphet
+from .estimators.our_prophet import OurProphet
+from ..app_settings import *
 
 
 class BaseStonksModel(metaclass=ABCMeta):
@@ -43,6 +42,14 @@ class BaseStonksModel(metaclass=ABCMeta):
         newDataFrame.y = df.close
         return newDataFrame
 
+    def get_data(self, tiker, api_key):
+        data = self.get_data_from_api(tiker, api_key)
+        return self.preprocessing(data)
+
+    @staticmethod
+    def train_test_split(df, periods):
+        return df.iloc[periods:], df.iloc[:periods]
+
     def fit(self, data, parameters):
         """
         :param data:
@@ -69,7 +76,7 @@ class BaseStonksModel(metaclass=ABCMeta):
         future = self.model.make_future_dataframe(periods, freq, include_history)
         return self.model.predict(future)
 
-    def fit_predict(self, data, parameters, periods: int = 90, freq="D", include_history=False):
+    def fit_predict(self, data, parameters, periods: int = QUART, freq="D", include_history=False):
         self.fit(data, parameters)
         return self.predict(periods, freq, include_history)
 
@@ -81,4 +88,4 @@ class BaseStonksModel(metaclass=ABCMeta):
         :param y_pred:
         :return:
         """
-        return np.mean(2 * abs(y - y_pred) / (y + y_pred)) * 100
+        return np.mean(abs(y - y_pred) / (y + y_pred)) * 100

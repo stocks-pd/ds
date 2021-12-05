@@ -1,9 +1,9 @@
-from django.http import HttpResponse
-from stonks_model_app.models.api.api_model import ApiBaseStonksModel
-from stonks_model_app.app.models import ProphetParam, Recommendations
 import requests
-from stonks_model_app.app_settings import *
 from django.utils import timezone
+from django.http import HttpResponse
+from ..models.api.api_model import ApiBaseStonksModel
+from .models import ProphetParam, Recommendations
+from ..app_settings import *
 
 
 def predict(request, tiker, periods):
@@ -36,4 +36,11 @@ def get_predict_by_tiker(tiker, periods, to_rec=False):
     api_model = ApiBaseStonksModel()
     params = ProphetParam.objects.latest("find_date").get_params()
     data = api_model.preprocessing(api_model.get_data_from_api(tiker.upper(), api_model.api_key))
-    return api_model.fit_predict(data, params, periods, to_rec)
+    return api_model.fit_predict_transform(data, params, periods, to_rec)
+
+
+def update_parameters(request):
+    api_model = ApiBaseStonksModel()
+    params = api_model.double_selection_hyperparameters("POOL")
+    print(params)
+    return HttpResponse(params)

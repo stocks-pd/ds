@@ -1,11 +1,10 @@
 import itertools
+import numpy as np
 from prophet import Prophet
 from .interfaces.imodel import IModel
-import pandas as pd
 
 
 class OurProphet(Prophet, IModel):
-
     def get_hyperparameters(self):
         return {
             "growth": self.growth,
@@ -27,32 +26,28 @@ class OurProphet(Prophet, IModel):
         }
 
     @staticmethod
-    def get_params_grid(estimators_dict: dict, train_data: pd.DataFrame, test_data: pd.DataFrame) -> list:
-        """
+    def get_params_grid(train, test, logic_type=True) -> list:
+        if logic_type:
+            params = {'growth': ('linear', 'flat'),
+                      'seasonality_mode': ('additive', 'multiplicative'),
+                      'yearly_seasonality': (True, False),
+                      'weekly_seasonality': (True, False),
+                      'daily_seasonality': (True, False),
+                      'train': [train],
+                      'test': [test]}
+        else:
+            params = {'n_changepoints': [i for i in range(50, 400, 50)],
+                      'changepoint_range': [i for i in np.arange(0.5, 0.9, 0.1)],
+                      'train': [train],
+                      'test': [test]}
 
-        :param estimators_dict:
-        :param train_data:
-        :type test_data: object
-        """
-        params = {
-            "seasonality_mode": ["additive", "multiplicative"],
-            "n_changepoints": [i for i in range(300, 510, 50)],
-            "changepoint_prior_scale": [i / 1000 for i in range(1, 501, 100)],
-            "seasonality_prior_scale": [i / 100 for i in range(1, 1001, 200)],
-            "holidays_prior_scale": [i / 100 for i in range(1, 1001, 200)],
-            "changepoint_range": [i / 100 for i in range(80, 96, 5)],
-            "growth": ["linear", "logistic"],
-            "estimator": estimators_dict,
-            "train_data": train_data,
-            "test_data": test_data
-        }
         return [dict(zip(params.keys(), v)) for v in
                 itertools.product(*params.values())]
 
     # TODO: учитывать праздники
     def make_future_dataframe(self, periods, freq='D', include_history=True):
         future = Prophet.make_future_dataframe(self, 2 * periods, freq=freq, include_history=False)
-        future['day'] = future['ds'].dt.weekday
+        future['day'] = future['ds_api'].dt.weekday
         future = future[future['day'] <= 4]
         future = future.iloc[:periods]
         return future

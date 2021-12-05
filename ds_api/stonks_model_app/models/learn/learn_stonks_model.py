@@ -1,12 +1,11 @@
-from stonks_model_app.models.baseStonksModel import BaseStonksModel
-from matplotlib import pyplot as plt
 import multiprocessing as mp
 import itertools
-
+from matplotlib import pyplot as plt
+from ..baseStonksModel import BaseStonksModel
 
 class LearnStonksModel(BaseStonksModel):
     def __init__(self, estimator: str = "OurProphet", api_key: str = "ZRMG7N7CVNEFA2RY"):
-        StonksModel.__init__(self, estimator, api_key)
+        BaseStonksModel.__init__(self, estimator, api_key)
         self.data_to_fit = self.preprocessing(self.get_data_from_api(company_ticker, api_key))
         self._train_test_split()
 
@@ -29,7 +28,7 @@ class LearnStonksModel(BaseStonksModel):
         self.print_params(self.best_parameters)
 
     def print_predict_with_real_data(self):
-        forecast = self.forecast.merge(self._test_data, on="ds", how="left")
+        forecast = self.forecast.merge(self._test_data, on="ds_api", how="left")
 
         plt.plot(forecast.ds, forecast.y, color="red")
         plt.plot(forecast.ds, forecast.yhat, color="black")
@@ -46,7 +45,7 @@ class LearnStonksModel(BaseStonksModel):
         plt.show()
 
     def print_all_timeline_predict_with_real_data(self):
-        forecast = self.forecast.merge(self.data_to_fit[:324], on="ds", how="right")
+        forecast = self.forecast.merge(self.data_to_fit[:324], on="ds_api", how="right")
         plt.figure(figsize=(18, 10))
         plt.plot(forecast.ds, forecast.y, color="red")
         plt.plot(forecast.ds, forecast.yhat, color="black")
