@@ -28,7 +28,7 @@ class ApiBaseStonksModel(BaseStonksModel):
                 'risk': predict.loc[-1, ["risk"]]
             }
         else:
-            return predict[['ds_api', 'yhat', 'yhat_lower', 'yhat_upper', 'risk']].to_json()
+            return predict[['ds_api', 'yhat', 'yhat_lower', 'yhat_upper', 'risk']].to_json(orient="records")
 
     def double_selection_hyperparameters(self, tiker, periods=QUART):
         best_params = self._complete(tiker, periods)

@@ -1,0 +1,156 @@
+h1 {
+    font-family: Montserrat;
+    font-weight: 700;
+    font-style: normal;
+    size: 50px;
+    line-height: 16px;
+}
+
+.container {
+    width: 100vw;
+    height: max-content;
+    background: #F9F9F9;
+}
+
+.detail_block {
+    display: inline-block;
+    height: 100vh;
+    width: 62vw;
+}
+
+.list {
+    display: inline-block;
+    height: 100vh;
+    width: 37vw;
+    margin: auto;
+    border-left: #AAA9A9 solid 3px;
+}
+
+.block {
+    width: 580px;
+    height: 99px;
+    background: #F0F0F0;
+    border-radius: 30px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.stocks_list{
+    overflow: auto;
+}
+
+.stock_img {
+    width: 80px;
+    height: 80px;
+    background: #AAA9A9;
+    border-radius: 20px;
+    margin: 5px;
+}
+
+.stock_company_name {
+    width: 60%;
+    height: 16px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 16px;
+    color: #000000;
+    padding: 10px;
+}
+
+.stock_price {
+    width: 20%;
+    height: 16px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 16px;
+    color: #000000;
+    padding: 10px;
+}
+
+.stock_tiker {
+    width: 45%;
+    height: 16px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 16px;
+    color: #717171;
+    padding: 10px;
+}
+
+.stock_price_change_growth {
+    width: 35%;
+    height: 16px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 16px;
+    text-align: right;
+    color: #0EC246;
+    padding: 10px;
+}
+
+.stock_price_change_fall {
+    width: 35%;
+    height: 16px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 16px;
+    text-align: right;
+    color: #DE0613;
+    padding: 10px;
+}
+
+.top_navigation {
+    display: table;
+    margin: auto;
+}
+
+.button {
+    display: inline-block;
+    width: 289px;
+    height: 60px;
+    background: #F0F0F0;
+    border-radius: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+.button_active{
+     display: inline-block;
+    width: 289px;
+    height: 60px;
+    border-radius: 30px;
+    margin-left: 20px;
+    margin-right: 20px;
+    background: #0EC246;
+}
+
+.button span,.button_active span {
+    position: relative;
+    top: 20px;
+    width: 135px;
+    height: 16px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 16px;
+    color: #000000;
+}
+
+/* шрифт */
+@font-face {
+    font-family: "Montserrat";
+    src: url("/static/fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}

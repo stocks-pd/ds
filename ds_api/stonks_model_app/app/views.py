@@ -4,6 +4,25 @@ from django.http import HttpResponse
 from ..models.api.api_model import ApiBaseStonksModel
 from .models import ProphetParam, Recommendations
 from ..app_settings import *
+from django.shortcuts import render
+import pandas as pd
+
+
+def index(request):
+    stock_tikers = requests.get(FMP_TIKER_LABELS.format(FMP_KEY[2])).json()
+    stocks = []
+    for s in stock_tikers[:10]:
+        stock = requests.get(FMP_STOCK_INFO.format(s, FMP_KEY[2])).json()
+        if not stock:
+            continue
+        stock = stock[0]
+        company_name = stock.get('companyName')[:18] + "..." if len(stock.get('companyName')) > 21 else stock.get(
+            'companyName')
+        stocks.append(
+            {'url': stock.get('image'), 'company_name': company_name, 'price': stock.get('price'), 'tiker': s,
+             'absolute_price_change': round(stock.get('changes'), 2),
+             'relative_price_change': round(stock.get('changes') / stock.get('price'), 2)})
+    return render(request, 'main/detail_with_list.html', {'stocks': stocks})
 
 
 def predict(request, tiker, periods):
