@@ -1,0 +1,7 @@
+Django>=3.2.9
+pandas
+numpy
+prophet
+matplotlib
+requests
+psycopg2

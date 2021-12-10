@@ -1,0 +1,19 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+
+    <meta charset="UTF-8">
+    <title>Title</title>
+    {% block css %}
+    <link rel="stylesheet" href="http://127.0.0.1:8000/static/css/style.css" type="text/css">
+    {% endblock %}
+
+    {% block js %}
+    <script src="http://127.0.0.1:8000/static/js/jquery-3.4.1.js"></script>
+    {% endblock %}
+</head>
+<body>
+{% block content %}{% endblock %}
+</body>
+</html>
