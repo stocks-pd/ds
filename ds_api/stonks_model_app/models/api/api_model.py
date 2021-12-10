@@ -2,21 +2,22 @@ from multiprocessing import Pool
 from ..baseStonksModel import BaseStonksModel
 from ...app_settings import *
 
+
 class ApiBaseStonksModel(BaseStonksModel):
     def __init__(self, estimator: str = "OurProphet", api_key: str = "ZRMG7N7CVNEFA2RY"):
         BaseStonksModel.__init__(self, estimator, api_key)
 
-    def fit_predict_transform(self, data, parameters, periods: int = 90, freq="D", include_history=False, to_rec=False):
+    def fit_predict_transform(self, data, parameters, periods: str, freq="D", include_history=False, to_rec=False):
+        print(periods)
         period_types = {
-            "week": 5,
-            "month": 21,
-            "quarter": 63,
-            "half_year": 126,
-            "year": 252
+            "WEEK": WEEK,
+            "MONTH": MONTH,
+            "QUART": QUART,
+            "HALF_YEAR": HALF_YEAR,
+            "YEAR": YEAR
         }
-        if isinstance(periods, str):
-            periods = period_types.get(periods)
-
+        periods = period_types.get(periods)
+        print(periods)
         risk = BaseStonksModel.fit_predict(self, data.iloc[periods:], parameters, periods)
         risk = round(self.get_smape(data.loc[:periods, ['y']].to_numpy(), risk.yhat.to_numpy()), 2)
         print(risk)
@@ -28,7 +29,7 @@ class ApiBaseStonksModel(BaseStonksModel):
                 'risk': predict.loc[-1, ["risk"]]
             }
         else:
-            return predict[['ds_api', 'yhat', 'yhat_lower', 'yhat_upper', 'risk']].to_json(orient="records")
+            return predict[['ds', 'yhat', 'yhat_lower', 'yhat_upper', 'risk']].to_json(orient="records")
 
     def double_selection_hyperparameters(self, tiker, periods=QUART):
         best_params = self._complete(tiker, periods)

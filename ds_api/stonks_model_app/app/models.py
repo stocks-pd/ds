@@ -3,8 +3,8 @@ from django.utils import timezone
 
 
 # Create your models here.
-class ProphetParam(models.Model):
-    find_date = models.DateTimeField("Дата подбора параметров")
+class ProphetParams(models.Model):
+    find_date = models.DateTimeField("Дата подбора параметров", default=timezone.now())
     growth = models.CharField("Параметр growth", max_length=10, default='linear')
     # changepoints = models.Ar
     n_changepoints = models.IntegerField("Параметр n_changepoints", default=25)
