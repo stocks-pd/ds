@@ -34,6 +34,7 @@ ALPHA_KEY = 'ZRMG7N7CVNEFA2RY'
 # FMP
 FMP_TIKER_LABELS = 'https://financialmodelingprep.com/api/v3/financial-statement-symbol-lists?apikey={}'
 FMP_STOCK_INFO = 'https://financialmodelingprep.com/api/v3/profile/{}?apikey={}'
+FRMP_HISTORICal_DATA = 'https://financialmodelingprep.com/api/v3/historical-price-full/{}?serietype=line&apikey={}'
 
 # Alphavantege
 ALPHA_GET_TIKER_HISTORY = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}' \
