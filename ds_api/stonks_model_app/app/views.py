@@ -3,7 +3,7 @@ import json
 from django.utils import timezone
 from django.http import HttpResponse
 from ..models.api.api_model import ApiBaseStonksModel
-from .models import ProphetParam
+from .models import ProphetParams
 from ..app_settings import *
 from django.shortcuts import render
 
@@ -26,15 +26,17 @@ def index(request):
 
 
 def detail(request):
-    ticker = request.GET.get("tiker", "").upper()
+    ticker = request.GET.get("ticker", "").upper()
     info = requests.get(FMP_STOCK_INFO.format(ticker, FMP_KEY[4])).json()
     history_price = requests.get(FRMP_HISTORICal_DATA.format(ticker, FMP_KEY[4])).json().get('historical')
     data = json.dumps({'info': info, 'historical': history_price})
     return HttpResponse(data, content_type="application/json")
 
 
-def predict(request, tiker, periods):
-    predict = get_predict_by_tiker(tiker, periods)
+def predict(request):
+    ticker = request.GET.get("ticker", "").upper()
+    periods = request.GET.get("periods", "").upper()
+    predict = get_predict_by_tiker(ticker, periods)
     return HttpResponse(predict)
 
 
@@ -46,28 +48,29 @@ def fit(request):
     # return HttpResponse(True)
 
 
-def update_recommendations(request):
-    url = FMP_TIKER_LABELS.format(FMP_KEY)
-    r = requests.get(url)
-    tikers = r.json()
-    predicts = []
-    for i in range(5):
-        predicts.append(get_predict_by_tiker(tikers[i], 90, True))
-    predict.sort(key=lambda l: l.get("yhat"))
-    date_time = timezone.now()
-    best_rec = Recommendations(date=date_time, **predict[0])
-    return HttpResponse(tikers)
+# def update_recommendations(request):
+#     url = FMP_TIKER_LABELS.format(FMP_KEY)
+#     r = requests.get(url)
+#     tikers = r.json()
+#     predicts = []
+#     for i in range(5):
+#         predicts.append(get_predict_by_tiker(tikers[i], 90, True))
+#     predict.sort(key=lambda l: l.get("yhat"))
+#     date_time = timezone.now()
+#     best_rec = Recommendations(date=date_time, **predict[0])
+#     return HttpResponse(tikers)
 
 
-def get_predict_by_tiker(tiker, periods, to_rec=False):
+def get_predict_by_tiker(ticker, periods, to_rec=False):
     api_model = ApiBaseStonksModel()
-    params = ProphetParam.objects.latest("find_date").get_params()
-    data = api_model.preprocessing(api_model.get_data_from_api(tiker.upper(), api_model.api_key))
+    params = ProphetParams.objects.latest('find_date')
+    params = params.get_params()
+    data = api_model.get_data_from_api(ticker, ALPHA_KEY)
+    data = api_model.preprocessing(data)
     return api_model.fit_predict_transform(data, params, periods, to_rec)
 
 
 def update_parameters(request):
     api_model = ApiBaseStonksModel()
     params = api_model.double_selection_hyperparameters("POOL")
-    print(params)
     return HttpResponse(params)

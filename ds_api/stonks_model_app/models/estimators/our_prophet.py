@@ -47,7 +47,7 @@ class OurProphet(Prophet, IModel):
     # TODO: учитывать праздники
     def make_future_dataframe(self, periods, freq='D', include_history=True):
         future = Prophet.make_future_dataframe(self, 2 * periods, freq=freq, include_history=False)
-        future['day'] = future['ds_api'].dt.weekday
+        future['day'] = future['ds'].dt.weekday
         future = future[future['day'] <= 4]
         future = future.iloc[:periods]
         return future
