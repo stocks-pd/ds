@@ -24,6 +24,27 @@ function getStockDetail(tiker) {
             document.getElementById('industry').innerText = data['info'][0]['industry']
             document.getElementById('sector').innerText = data['info'][0]['sector']
             document.getElementById('dividents').innerText = data['info'][0]['lastDiv']
+            chartDraw(data['historical'])
         }
     });
+}
+
+
+function chartDraw(map) {
+    var table = anychart.data.table('date');
+    table.addData(map);
+
+    mapping = table.mapAs({x: 'date', value: 'close'});
+
+    var chart = anychart.stock();
+
+    var series = chart.plot(0).area(mapping);
+
+    var scrollerSeries = chart.scroller().area(table.mapAs({'value': 'value'}));
+
+    series.seriesType("column");
+
+    scrollerSeries.seriesType("column");
+
+    document.getElementById('graph')
 }
