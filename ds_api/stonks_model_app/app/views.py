@@ -3,7 +3,7 @@ import json
 from django.utils import timezone
 from django.http import HttpResponse
 from ..models.api.api_model import ApiBaseStonksModel
-from .models import ProphetParam, Recommendations
+from .models import ProphetParam
 from ..app_settings import *
 from django.shortcuts import render
 
@@ -30,7 +30,6 @@ def detail(request):
     info = requests.get(FMP_STOCK_INFO.format(ticker, FMP_KEY[4])).json()
     history_price = requests.get(FRMP_HISTORICal_DATA.format(ticker, FMP_KEY[4])).json().get('historical')
     data = json.dumps({'info': info, 'historical': history_price})
-    print(data)
     return HttpResponse(data, content_type="application/json")
 
 

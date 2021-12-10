@@ -1,10 +1,10 @@
-version: '3.9'
+version: '3.7'
 
 services:
   ds:
     build: web_ds
     working_dir: '/ds'
-    command: python manage.py runserver
+    command: python manage.py runserver 0.0.0.0:8000
     volumes:
       - ./ds_api:/ds
     ports:

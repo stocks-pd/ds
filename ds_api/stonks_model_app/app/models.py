@@ -4,7 +4,7 @@ from django.utils import timezone
 
 # Create your models here.
 class ProphetParam(models.Model):
-    find_date = models.DateTimeField("Дата подбора параметров", default=timezone.now())
+    find_date = models.DateTimeField("Дата подбора параметров")
     growth = models.CharField("Параметр growth", max_length=10, default='linear')
     # changepoints = models.Ar
     n_changepoints = models.IntegerField("Параметр n_changepoints", default=25)
@@ -45,11 +45,11 @@ class ProphetParam(models.Model):
             "uncertainty_samples": self.uncertainty_samples,
             # "stan_backend": self.stan_backend
         }
-
-
-class Recommendations(models.Model):
-    date_of_recommendation = models.DateTimeField("Дата подборки", default=timezone.now())
-    tiker = models.CharField("Тикер", max_length=10)
-    period = models.CharField("Период прогноза", max_length=10)
-    price = models.FloatField("Прогнозная цена")
-    risk = models.FloatField("Риск")
+#
+#
+# class Recommendations(models.Model):
+#     date_of_recommendation = models.DateTimeField("Дата подборки", default=timezone.now())
+#     tiker = models.CharField("Тикер", max_length=10)
+#     period = models.CharField("Период прогноза", max_length=10)
+#     price = models.FloatField("Прогнозная цена")
+#     risk = models.FloatField("Риск")
