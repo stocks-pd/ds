@@ -17,25 +17,24 @@ h3 {
 }
 
 .container {
-    width: 100vw;
+    width: 70vw;
     height: max-content;
-    background: #F9F9F9;
+    margin: auto;
+    /*background: #F9F9F9;*/
 }
 
 .detail_block {
-    display: inline-block;
     height: 100vh;
-    width: 52vw;
+    width: 100%;
     padding-left: 5vw;
     padding-right: 5vw;
+    margin: auto;
 }
 
 .list {
-    display: inline-block;
     height: 100vh;
     width: 37vw;
     margin: auto;
-    border-left: #AAA9A9 solid 3px;
 }
 
 .block {
@@ -164,19 +163,20 @@ h3 {
 }
 
 .description {
+    width: 100%;
+    text-align: justify;
     font-family: Montserrat;
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
     line-height: 30px;
     color: #000000;
-    overflow: auto;
-    max-height: 55vh;
 }
 
 .company_info {
-
-    width: 50%;
+    width: max-content;
+    border-spacing: 30px;
+    margin: auto;
 }
 
 .company_info td {
@@ -188,11 +188,53 @@ h3 {
     font-size: 20px;
     line-height: 12px;
     text-align: justify;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    padding-left: 25px;
+    padding: 30px;
     color: #404040;
 }
+
+.graph {
+    height: 650px;
+    width: 100%;
+}
+
+/* Стилизация графиков */
+.anychart-input-label, .anychart-credits-logo, .anychart-credits-text {
+    display: none !important;
+}
+
+.anychart-range-selector {
+    position: absolute !important;
+    bottom: 35px !important;
+    left: 60px !important;
+    width: 771px!important;
+    height: 60px!important;
+    background: #F0F0F0!important;
+    box-shadow: 0px -3px 4px rgba(0, 0, 0, 0.05)!important;
+    border-radius: 0px 0px 20px 20px!important;
+}
+
+
+.anychart-button {
+    width: max-content !important;
+    height: 44px !important;
+    font-family: Montserrat!important;
+    font-style: normal!important;
+    font-weight: 600!important;
+    font-size: 20px!important;
+    line-height: 16px!important;
+    color: #000000!important;
+    border: none!important;
+    margin-inline: 15px!important;
+    margin-top: 8px!important;
+    background: none!important;
+}
+
+
+.anychart-button-checked {
+    background: #0EC246 !important;
+    border-radius: 30px !important;
+}
+
 
 /* шрифт */
 @font-face {

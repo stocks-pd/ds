@@ -1,0 +1,38 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div id="list" class="list">
+    <h1 align="center">Акции</h1>
+    <div class="stocks_list">
+        {% for s in stocks %}
+
+        <a href="{% url 'stonks_model_app:detail' s.ticker %}">
+            <div class="block">
+                <table>
+                    <tr>
+                        <td rowspan="2">
+                            <!--todo сделаь проверку на отсутсвие картинки-->
+                            <img class="stock_img" src="{{ s.url }}">
+
+                        </td>
+                        <td class="stock_company_name">{{ s.company_name|truncatewords_html:5 }}</td>
+                        <td align="right" class="stock_price">{{ s.price }} $</td>
+                    </tr>
+                    <tr>
+                        <td class="stock_tiker">{{ s.ticker }}</td>
+                        {% if s.absolute_price_change > 0 %}
+                        <td align="right" class="stock_price_change_growth">
+                            {% else %}
+                        <td align="right" class="stock_price_change_fall">
+                            {% endif %}
+                            {{ s.absolute_price_change }} ({{ s.relative_price_change }}%)
+                        </td>
+                    </tr>
+                </table>
+            </div>
+        </a>
+
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}
