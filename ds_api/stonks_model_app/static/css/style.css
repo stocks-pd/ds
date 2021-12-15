@@ -1,3 +1,7 @@
+body {
+    margin: 0 !important;
+}
+
 h1 {
     font-family: MontserratBold;
     font-weight: 700;
@@ -16,26 +20,97 @@ h3 {
     color: #000000;
 }
 
+a {
+    text-decoration: none;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #000000;
+}
+
+
+tr:hover {
+    cursor: pointer;
+    background: #F9F9F9;
+}
+
+header {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    left: 0px;
+    top: 0px;
+    border-bottom: 2px solid #AAA9A9;
+}
+
+footer {
+    width: 100%;
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    height: 80px;
+    border-bottom: 2px solid #AAA9A9;
+    background: #F0F0F0;
+}
+
+footer span {
+    position: relative;
+    top: 25px;
+}
+
 .container {
     width: 70vw;
     height: max-content;
     margin: auto;
-    /*background: #F9F9F9;*/
+}
+
+.logo {
+    position: relative;
+    top: 15px;
+    width: 175px;
+    height: 50px;
+    margin: auto;
+    background: linear-gradient(98.62deg, #0EC246 0%, rgba(14, 194, 70, 0.6) 100%);
+    border-radius: 20px;
+}
+
+.logo span {
+    position: relative;
+    width: 98px;
+    height: 16px;
+    left: 38px;
+    top: 17px;
+
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 34px;
+    line-height: 16px;
+
+    color: #FFFFFF;
 }
 
 .detail_block {
-    height: 100vh;
-    width: 100%;
-    padding-left: 5vw;
-    padding-right: 5vw;
+    height: max-content;
+    width: 70%;
     margin: auto;
 }
 
 .list {
     height: 100vh;
-    width: 37vw;
     margin: auto;
 }
+
 
 .block {
     width: 580px;
@@ -120,10 +195,6 @@ h3 {
     padding: 10px;
 }
 
-.top_navigation {
-    display: table;
-    margin: auto;
-}
 
 .button {
     display: inline-block;
@@ -143,6 +214,7 @@ h3 {
     margin-left: 10px;
     margin-right: 10px;
     background: #0EC246;
+    color: white;
 }
 
 .button span, .button_active span {
@@ -175,7 +247,7 @@ h3 {
 
 .company_info {
     width: max-content;
-    border-spacing: 30px;
+    border-spacing: 20px;
     margin: auto;
 }
 
@@ -188,13 +260,15 @@ h3 {
     font-size: 20px;
     line-height: 12px;
     text-align: justify;
-    padding: 30px;
+    padding: 35px;
     color: #404040;
 }
 
 .graph {
+    position: relative;
+    left: -7%;
     height: 650px;
-    width: 100%;
+    width: 120%;
 }
 
 /* Стилизация графиков */
@@ -206,35 +280,46 @@ h3 {
     position: absolute !important;
     bottom: 35px !important;
     left: 60px !important;
-    width: 771px!important;
-    height: 60px!important;
-    background: #F0F0F0!important;
-    box-shadow: 0px -3px 4px rgba(0, 0, 0, 0.05)!important;
-    border-radius: 0px 0px 20px 20px!important;
+    width: 49.85vw !important;
+    height: 60px !important;
+    background: #F0F0F0 !important;
+    box-shadow: 0px -3px 4px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 0px 0px 20px 20px !important;
 }
 
 
 .anychart-button {
     width: max-content !important;
     height: 44px !important;
-    font-family: Montserrat!important;
-    font-style: normal!important;
-    font-weight: 600!important;
-    font-size: 20px!important;
-    line-height: 16px!important;
-    color: #000000!important;
-    border: none!important;
-    margin-inline: 15px!important;
-    margin-top: 8px!important;
-    background: none!important;
+    font-family: Montserrat !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+    line-height: 16px !important;
+    color: #000000 !important;
+    border: none !important;
+    margin-inline: 25px !important;
+    margin-top: 8px !important;
+    background: none !important;
 }
 
 
 .anychart-button-checked {
     background: #0EC246 !important;
     border-radius: 30px !important;
+    color: #F9F9F9 !important;
 }
 
+
+/* Сворачивание блоков текста */
+#description_part2, #hide {
+    display: none;
+}
+
+.clickable {
+    cursor: pointer;
+    color: blue;
+}
 
 /* шрифт */
 @font-face {

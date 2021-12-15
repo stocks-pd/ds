@@ -7,69 +7,60 @@
 
 {% block js %}
 {{ block.super }}
-<script src="http://127.0.0.1:8000/static/js/list.js"></script>
+<script src="http://127.0.0.1:8000/static/js/detail.js"></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-stock.min.js"></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
 <script src="https://cdn.anychart.com/csv-data/csco-daily.js"></script>
-
-
 {% endblock %}
 
 {% block content %}
-<div class="container">
-    <div id="main_block" class="detail_block">
-        <h1 align="center">Информация по акции {{ ticker }}</h1>
-        <!--        <div align="center" class="top_navigation">-->
-        <!--            <div class="button_active"><span align="center">График</span></div>-->
-        <!--            <div class="button"><span>Информация</span></div>-->
-        <!--            <div class="button"><span>Прогноз</span></div>-->
-        <!--        </div>-->
-        <div id="detail" class="detail">
-            <div id="graph" class="graph"></div>
-            <div id="info" class="info">
-                <h3>Описание</h3>
-                <p id="company_description_short" class="description">
-                    {{ description|truncatewords_html:150 }} <a href="#">Развернуть</a>
-                </p>
-                <p id="company_description_full" class="description" hidden>
-                    {{ description }} <a onclick="document.getElementById().setAttribute('hidden')">Свернуть</a>
-                </p>
-                <h3>Параметры</h3>
-                <table class="company_info">
-                    <tr>
-                        <td>
-                            Страна:
-                            {{ country }}
-                        </td>
-                        <td>
-                            Индустрия:
-                            {{ industry }}
 
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            Сектор:
+<div id="main_block" class="detail_block">
+    <h1 align="center">Информация по акции {{ ticker }}</h1>
+    <div id="detail" class="detail">
+        <div id="graph" class="graph"></div>
+        <div id="info" class="info">
+            <h3>Описание</h3>
+            <p id="company_description_short" class="description">
+                {{ description_part1 }}<span id="dots">...</span> <span id="show"
+                                                                        class="clickable">Развернуть</span>
+                <span id="description_part2">{{ description_part2 }}</span> <span id="hide"
+                                                                                  class="clickable">Свернуть</span>
+            </p>
+            <h3>Параметры</h3>
+            <table class="company_info">
+                <tr>
+                    <td>
+                        Страна:
+                        {{ country }}
+                    </td>
+                    <td>
+                        Индустрия:
+                        {{ industry }}
 
-                            {{ sector }}
-                        </td>
-                        <td>
-                            Прошлые диведенды:
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Сектор:
 
-                            {{ divedents }}
-                        </td>
+                        {{ sector }}
+                    </td>
+                    <td>
+                        Прошлые диведенды:
 
-                    </tr>
+                        {{ divedents }}
+                    </td>
 
-                </table>
-            </div>
-            <div id="predict" class="predict"></div>
+                </tr>
+
+            </table>
         </div>
+        <div id="predict" class="predict"></div>
     </div>
-
-
 </div>
+
 
 <script>
     anychart.onDocumentReady(function () {
@@ -77,38 +68,38 @@
         var customRanges = [
             {
                 'text': 'Неделя',
-                'type': 'unit',
-                'unit': 'day',
-                'count': 9,
-
+                'type': 'points',
+                // 'unit': 'day',
+                'count': 5,
+                'anchor': 'last-date'
             },
             {
                 'text': 'Месяц',
-                'type': 'unit',
-                'unit': 'day',
-                'count': 32,
-
+                'type': 'points',
+                // 'unit': 'day',
+                'count': 31,
+                'anchor': 'last-date'
             },
             {
                 'text': 'Квартал',
-                'type': 'unit',
-                'unit': 'day',
-                'count': 32 * 3,
-
+                'type': 'points',
+                // 'unit': 'day',
+                'count': 31 * 3,
+                'anchor': 'last-date'
             },
             {
                 'text': 'Полгода',
-                'type': 'unit',
-                'unit': 'day',
-                'count': 32 * 6,
-
+                'type': 'points',
+                // 'unit': 'day',
+                'count': 31 * 6,
+                'anchor': 'last-date'
             },
             {
                 'text': 'Год',
-                'type': 'unit',
-                'unit': 'day',
-                'count': 32 * 6 + 31 * 6,
-
+                'type': 'points',
+                // 'unit': 'day',
+                'count': 31 * 6,
+                'anchor': 'last-date'
             },
             {
                 'text': 'Весь период',
@@ -125,7 +116,6 @@
 
         // set the chart type
         var chart = anychart.stock();
-
         chart.plot(0).yAxis().enabled(false);
         chart.plot(0).yAxis().orientation('right');
         chart.plot(0).xAxis(false);

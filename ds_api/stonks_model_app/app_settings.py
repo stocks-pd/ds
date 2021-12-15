@@ -2,7 +2,7 @@ from multiprocessing import cpu_count as cpu_count
 import requests
 
 # API keys
-FMP_KEY_INDEX = 6
+FMP_KEY_INDEX = 4
 FMP_KEY = ['df7afe83903f789adc2f99af26cef1c9',
            "e3b78e56511d7dfdbd8000775c51664c",
            "b0bf65b946c24a87cbd7c605c0bb5239",

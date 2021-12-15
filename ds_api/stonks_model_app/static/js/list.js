@@ -1,32 +1,62 @@
 $(document).ready(function () {
-    //переключение вкладок
-    $(".jstab > li:not('.selected, .blk')").click(function () {
-        var cb = $(this);
+    $('#table').DataTable({
+        data: table,
+        dom: '<"search"fl><"top">rt<"bottom"ip><"clear">',
+        buttons: [],
+        language: {
+            "processing": "Подождите...",
+            "search": "Поиск:",
+            "lengthMenu": "Показать _MENU_ записей",
+            "info": "Записи с _START_ до _END_ из _TOTAL_ записей",
+            "infoEmpty": "Записи с 0 до 0 из 0 записей",
+            "infoFiltered": "(отфильтровано из _MAX_ записей)",
+            "infoPostFix": "",
+            "loadingRecords": "Загрузка записей...",
+            "zeroRecords": "Записи отсутствуют.",
+            "emptyTable": "В таблице отсутствуют данные",
+            "paginate": {
+                "first": "Первая",
+                "previous": "Предыдущая",
+                "next": "Следующая",
+                "last": "Последняя"
+            },
+            "aria": {
+                "sortAscending": ": активировать для сортировки столбца по возрастанию",
+                "sortDescending": ": активировать для сортировки столбца по убыванию"
+            }
+        },
+        "iDisplayLength": 25,
+        "aLengthMenu": [[10, 20, 50, 100, -1], [10, 20, 50, 100, "все"]],
+        columns: [
+            {
+                data: 'company_name'
+            },
+            {
+                data: 'ticker'
+            },
+            {
+                data: 'price'
+            },
 
-        $(".tabs > li").removeClass("selected");
-        var cc = cb.attr("class");
-        cb.addClass("selected");
-        $("form > div").hide();
-        $("form > div[id=" + cc + "]").show();
+            {
+                data: 'absolute_price_change',
+                render: function (data, type, row, meta) {
+                    var absol = data.toFixed(2);
+                    var rel = row['relative_price_change'].toFixed(2);
+                    var colour = absol < 0 ? 'red' : 'green'
+                    return type === 'display' ?
+                        '<span style="color:' + colour + '">' + absol + ' (' + rel + '%)' + '</span>' :
+                        absol + ' (' + rel + '%)';
+                }
+            },
+        ]
+
+
     });
+
+    $('tr').click(function (el) {
+        let ticker = el.target.parentNode.childNodes[1].innerText;
+        location.href = '/detail/' + ticker;
+    })
 });
-
-function getStockDetail(ticker) {
-    $.ajax({
-        url: "/detail",
-        type: "GET",
-        dataType: "json",
-        data: {ticker: ticker},
-        success: function (data) {
-            document.getElementById('detail').removeAttribute('hidden');
-            document.getElementById('company_description').innerText = data['info'][0]['description']
-            document.getElementById('country').innerText = data['info'][0]['country']
-            document.getElementById('industry').innerText = data['info'][0]['industry']
-            document.getElementById('sector').innerText = data['info'][0]['sector']
-            document.getElementById('dividents').innerText = data['info'][0]['lastDiv']
-            graph_data = data['historical'];
-            console.log(graph_data)
-        }
-    });
-}
 

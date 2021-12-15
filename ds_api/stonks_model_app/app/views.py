@@ -11,18 +11,19 @@ from googletrans import Translator
 
 def index(request):
     stocks = []
-    for s in STOCKS_TIKERS[:10]:
+    for s in STOCKS_TIKERS[:20]:
         stock = requests.get(FMP_STOCK_INFO.format(s, FMP_KEY[FMP_KEY_INDEX])).json()
         if not stock:
             continue
         stock = stock[0]
 
         stocks.append(
-            {'url': stock.get('image'), 'company_name': stock.get('companyName'), 'price': stock.get('price'),
+            {'company_name': stock.get('companyName'),
+             'price': stock.get('price'),
              'ticker': s,
              'absolute_price_change': round(stock.get('changes'), 2),
              'relative_price_change': round(stock.get('changes') / stock.get('price'), 2)})
-    return render(request, 'list/list.html', {'stocks': stocks})
+    return render(request, 'list/list.html', {'stocks_table': stocks})
 
 
 def detail(request, ticker):
@@ -37,7 +38,8 @@ def detail(request, ticker):
         'historical')
     return render(request, 'detail/detail.html', {
         'ticker': ticker,
-        'description': description,
+        'description_part1': description[:500],
+        'description_part2': description[500:],
         'country': country,
         'sector': sector,
         'industry': industry,

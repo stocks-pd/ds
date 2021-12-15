@@ -1,38 +1,38 @@
 {% extends 'base.html' %}
 
+{% block css %}
+{{ block.super }}
+ <link href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css">
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+    <script src="http://127.0.0.1:8000/static/js/list.js"></script>
+    <script src="http://127.0.0.1:8000/static/js/dataTables/dataTables.min.js"></script>
+    <script src="http://127.0.0.1:8000/static/js/dataTables/buttons.min.js"></script>
+    <script src="http://127.0.0.1:8000/static/js/dataTables/flash.min.js"></script>
+    <script src="http://127.0.0.1:8000/static/js/dataTables/jszip.min.js"></script>
+    <script src="http://127.0.0.1:8000/static/js/dataTables/vfs_fonts.js"></script>
+    <script src="http://127.0.0.1:8000/static/js/dataTables/buttons.html5.min.js"></script>
+    <script src="http://127.0.0.1:8000/static/js/dataTables/buttons.print.min.js"></script>
+<script>
+    var table = {{stocks_table | safe | escape}};
+</script>
+{% endblock %}
+
 {% block content %}
 <div id="list" class="list">
     <h1 align="center">Акции</h1>
-    <div class="stocks_list">
-        {% for s in stocks %}
+    <table id="table">
+        <thead>
+        <tr>
+            <th>Название</th>
+            <th>Тикер</th>
+            <th>Цена</th>
+            <th>Изменение цены</th>
+        </tr>
+        </thead>
+    </table>
 
-        <a href="{% url 'stonks_model_app:detail' s.ticker %}">
-            <div class="block">
-                <table>
-                    <tr>
-                        <td rowspan="2">
-                            <!--todo сделаь проверку на отсутсвие картинки-->
-                            <img class="stock_img" src="{{ s.url }}">
-
-                        </td>
-                        <td class="stock_company_name">{{ s.company_name|truncatewords_html:5 }}</td>
-                        <td align="right" class="stock_price">{{ s.price }} $</td>
-                    </tr>
-                    <tr>
-                        <td class="stock_tiker">{{ s.ticker }}</td>
-                        {% if s.absolute_price_change > 0 %}
-                        <td align="right" class="stock_price_change_growth">
-                            {% else %}
-                        <td align="right" class="stock_price_change_fall">
-                            {% endif %}
-                            {{ s.absolute_price_change }} ({{ s.relative_price_change }}%)
-                        </td>
-                    </tr>
-                </table>
-            </div>
-        </a>
-
-        {% endfor %}
-    </div>
 </div>
 {% endblock %}
