@@ -36,6 +36,13 @@ def detail(request, ticker):
     industry = translator.translate(info[0]['industry'], dest='ru', src='en').text
     historical_price = requests.get(FRMP_HISTORICal_DATA.format(ticker, FMP_KEY[FMP_KEY_INDEX])).json().get(
         'historical')
+    forecast, accuracy = get_predict_by_tiker(ticker, "YEAR")
+    if accuracy <= 10:
+        accuracy = '<span class="good_accuracy">'+str(accuracy)+'%</span>'
+    elif accuracy <= 30:
+        accuracy = '<span class="normal_accuracy">' + str(accuracy) + '%</span>'
+    else:
+        accuracy = '<span class="bad_accuracy">' + str(accuracy) + '%</span>'
     return render(request, 'detail/detail.html', {
         'ticker': ticker,
         'description_part1': description[:500],
@@ -43,7 +50,9 @@ def detail(request, ticker):
         'country': country,
         'sector': sector,
         'industry': industry,
-        'historical_price': historical_price
+        'historical_price': historical_price,
+        'forecast': forecast,
+        'accuracy': accuracy
     })
 
 

@@ -18,6 +18,7 @@
 
 <div id="main_block" class="detail_block">
     <h1 align="center">Информация по акции {{ ticker }}</h1>
+    <a class="back" href="/">К акциям</a>
     <div id="detail" class="detail">
         <div id="graph" class="graph"></div>
         <div id="info" class="info">
@@ -50,13 +51,16 @@
                     <td>
                         Прошлые диведенды:
 
-                        {{ divedents }}
+                        {{ divedents|default:'-' }}
                     </td>
 
                 </tr>
 
             </table>
         </div>
+         <h3>Прогноз</h3>
+         <h4>Точность прогноза: {{accuracy|safe}}</h4>
+
         <div id="predict" class="predict"></div>
     </div>
 </div>
@@ -68,36 +72,36 @@
         var customRanges = [
             {
                 'text': 'Неделя',
-                'type': 'points',
-                // 'unit': 'day',
+                'type': 'unit',
+                'unit': 'day',
                 'count': 5,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Месяц',
-                'type': 'points',
-                // 'unit': 'day',
+                'type': 'unit',
+                'unit': 'day',
                 'count': 31,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Квартал',
-                'type': 'points',
-                // 'unit': 'day',
+                'type': 'unit',
+                'unit': 'day',
                 'count': 31 * 3,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Полгода',
-                'type': 'points',
-                // 'unit': 'day',
+                'type': 'unit',
+                'unit': 'day',
                 'count': 31 * 6,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Год',
-                'type': 'points',
-                // 'unit': 'day',
+                'type': 'unit',
+                'unit': 'day',
                 'count': 31 * 6,
                 'anchor': 'last-date'
             },
@@ -106,6 +110,15 @@
                 'type': 'max'
             },
         ];
+
+          var format ="dd MMMM yyyy 'г.'";
+		var locale = "ru-ru";
+
+		anychart.format.outputLocale("ru-ru");
+		anychart.format.outputDateTimeFormat("dd MMMM yyyy 'г.'");
+
+		var timeZoneOffset = new Date().getTimezoneOffset();
+
 
         // set the data
         var table = anychart.data.table('date');
@@ -144,6 +157,14 @@
 
         series.stroke('2 black');
         series.fill("WhiteSmoke 1");
+
+
+        chart.tooltip().titleFormat(function () {
+          return anychart.format.dateTime(this.points[0].x, format, timeZoneOffset, locale);
+        });
+
+        chart.tooltip().displayMode('union');
+
         // set the container id
         chart.container("graph");
 
@@ -151,6 +172,120 @@
         chart.draw();
 
         rangeSelector.render(chart);
+    });
+
+
+</script>
+<script>
+    anychart.onDocumentReady(function () {
+
+        var customRanges_forecast = [
+            {
+                'text': 'Неделя',
+                'type': 'unit',
+                'unit': 'day',
+                'count': 5,
+                'anchor': 'first-date'
+            },
+            {
+                'text': 'Месяц',
+                'type': 'unit',
+                'unit': 'day',
+                'count': 31,
+                'anchor': 'first-date'
+            },
+            {
+                'text': 'Квартал',
+                'type': 'unit',
+                'unit': 'day',
+                'count': 31 * 3,
+                'anchor': 'first-date'
+            },
+            {
+                'text': 'Полгода',
+                'type': 'unit',
+                'unit': 'day',
+                'count': 31 * 6,
+                'anchor': 'first-date'
+            },
+              {
+                'text': 'Год',
+                'type': 'max'
+            },
+        ];
+
+        var format ="dd MMMM yyyy 'г.'";
+		var locale = "ru-ru";
+
+		anychart.format.outputLocale("ru-ru");
+		anychart.format.outputDateTimeFormat("dd MMMM yyyy 'г.'");
+
+		var timeZoneOffset = new Date().getTimezoneOffset();
+
+        // set the data
+        var table_forecast = anychart.data.table('ds');
+        table_forecast.addData({{forecast | safe | escape}})
+
+        // map the data
+        mapping_forecast_yhat = table_forecast.mapAs({'x': 'ds', 'value': 'yhat'});
+        mapping_forecast_yhat_lower = table_forecast.mapAs({'x': 'ds', 'value': 'yhat_lower'});
+        mapping_forecast_yhat_upper = table_forecast.mapAs({'x': 'ds', 'value': 'yhat_upper'});
+
+        // set the chart type
+        var chart_forecast = anychart.stock();
+        chart_forecast.plot(0).yAxis().enabled(false);
+        chart_forecast.plot(0).yAxis().orientation('right');
+        chart_forecast.plot(0).xAxis(false);
+        chart_forecast.scroller().enabled(false);
+
+        chart_forecast.crosshair().yLabel().axisIndex(1);
+        chart_forecast.crosshair().xLabel(false);
+
+        var rangeSelector_forecast = anychart.ui.rangeSelector();
+        rangeSelector_forecast.ranges(customRanges_forecast);
+
+
+        chart_forecast.padding().right(100);
+
+        var series_forecast;
+
+        series_forecast = chart_forecast.plot(0).area(mapping_forecast_yhat);
+        series_forecast.name("Цена");
+        series_forecast.stroke('2 black');
+        series_forecast.fill("WhiteSmoke 1");
+
+        series_forecast = chart_forecast.plot(0).line(mapping_forecast_yhat_lower);
+        series_forecast.name("Нижняя граница");
+        series_forecast.stroke('2 #DE0613');
+
+           series_forecast = chart_forecast.plot(0).line(mapping_forecast_yhat_upper);
+        series_forecast.name("Верхняя граница");
+        series_forecast.stroke('2 #0EC246');
+
+
+        var indicator_forecast = chart_forecast.plot(0).priceIndicator();
+        indicator_forecast.axis()
+        indicator_forecast.value('last-visible')
+        indicator_forecast.stroke("#717171", 1, "1 1");
+        indicator_forecast.label().background().fill("White");
+        indicator_forecast.label().fontColor("Black");
+        indicator_forecast.label().fontSize(20)
+
+
+        chart_forecast.tooltip().titleFormat(function () {
+          return anychart.format.dateTime(this.points[0].x, format, timeZoneOffset, locale);
+        });
+
+        chart_forecast.tooltip().displayMode('union');
+
+
+        // set the container id
+        chart_forecast.container("predict");
+
+        // initiate drawing the chart
+        chart_forecast.draw();
+
+        rangeSelector_forecast.render(chart_forecast);
     });
 
 

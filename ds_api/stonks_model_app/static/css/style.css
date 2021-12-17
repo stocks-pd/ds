@@ -1,5 +1,6 @@
 body {
     margin: 0 !important;
+    height: 100%;
 }
 
 h1 {
@@ -20,8 +21,28 @@ h3 {
     color: #000000;
 }
 
+h4 {
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 12px;
+    text-align: justify;
+    color: #000000;
+}
+
+
 a {
     text-decoration: none;
+}
+
+.back {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 12px;
+    text-align: justify;
 }
 
 table {
@@ -264,11 +285,23 @@ footer span {
     color: #404040;
 }
 
-.graph {
+.graph, .predict {
     position: relative;
     left: -7%;
     height: 650px;
     width: 120%;
+}
+
+.good_accuracy {
+    color: #0EC246;
+}
+
+.normal_accuracy {
+     color: #404040;
+}
+
+.bad_accuracy {
+  color: #DE0613;
 }
 
 /* Стилизация графиков */
@@ -298,16 +331,25 @@ footer span {
     line-height: 16px !important;
     color: #000000 !important;
     border: none !important;
-    margin-inline: 25px !important;
+    margin-inline: 20px !important;
+    padding-inline: 10px!important;
     margin-top: 8px !important;
     background: none !important;
+}
+
+.predict .anychart-button{
+     margin-inline: 40px !important;
 }
 
 
 .anychart-button-checked {
     background: #0EC246 !important;
-    border-radius: 30px !important;
+    border-radius: 15px !important;
     color: #F9F9F9 !important;
+}
+
+.ac-fallback-symbol{
+    display: none;
 }
 
 
