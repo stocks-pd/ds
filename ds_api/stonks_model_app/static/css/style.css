@@ -1,3 +1,8 @@
+body {
+    margin: 0 !important;
+    height: 100%;
+}
+
 h1 {
     font-family: MontserratBold;
     font-weight: 700;
@@ -16,27 +21,117 @@ h3 {
     color: #000000;
 }
 
-.container {
-    width: 100vw;
-    height: max-content;
+h4 {
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 12px;
+    text-align: justify;
+    color: #000000;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+.back {
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 12px;
+    text-align: justify;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #000000;
+}
+
+
+tr:hover {
+    cursor: pointer;
     background: #F9F9F9;
 }
 
+header {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    left: 0px;
+    top: 0px;
+    border-bottom: 2px solid #AAA9A9;
+}
+
+footer {
+    width: 100%;
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    height: 80px;
+    border-bottom: 2px solid #AAA9A9;
+    background: #F0F0F0;
+}
+
+footer span {
+    position: relative;
+    top: 25px;
+}
+
+.container {
+    width: 70vw;
+    height: max-content;
+    margin: auto;
+}
+
+.logo {
+    position: relative;
+    top: 15px;
+    width: 175px;
+    height: 50px;
+    margin: auto;
+    background: linear-gradient(98.62deg, #0EC246 0%, rgba(14, 194, 70, 0.6) 100%);
+    border-radius: 20px;
+}
+
+.logo span {
+    position: relative;
+    width: 98px;
+    height: 16px;
+    left: 38px;
+    top: 17px;
+
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 34px;
+    line-height: 16px;
+
+    color: #FFFFFF;
+}
+
 .detail_block {
-    display: inline-block;
-    height: 100vh;
-    width: 52vw;
-    padding-left: 5vw;
-    padding-right: 5vw;
+    height: max-content;
+    width: 70%;
+    margin: auto;
 }
 
 .list {
-    display: inline-block;
     height: 100vh;
-    width: 37vw;
     margin: auto;
-    border-left: #AAA9A9 solid 3px;
 }
+
 
 .block {
     width: 580px;
@@ -121,10 +216,6 @@ h3 {
     padding: 10px;
 }
 
-.top_navigation {
-    display: table;
-    margin: auto;
-}
 
 .button {
     display: inline-block;
@@ -144,6 +235,7 @@ h3 {
     margin-left: 10px;
     margin-right: 10px;
     background: #0EC246;
+    color: white;
 }
 
 .button span, .button_active span {
@@ -164,19 +256,20 @@ h3 {
 }
 
 .description {
+    width: 100%;
+    text-align: justify;
     font-family: Montserrat;
     font-style: normal;
     font-weight: 500;
     font-size: 20px;
     line-height: 30px;
     color: #000000;
-    overflow: auto;
-    max-height: 55vh;
 }
 
 .company_info {
-
-    width: 50%;
+    width: max-content;
+    border-spacing: 20px;
+    margin: auto;
 }
 
 .company_info td {
@@ -188,10 +281,86 @@ h3 {
     font-size: 20px;
     line-height: 12px;
     text-align: justify;
-    padding-top: 25px;
-    padding-bottom: 25px;
-    padding-left: 25px;
+    padding: 35px;
     color: #404040;
+}
+
+.graph, .predict {
+    position: relative;
+    left: -7%;
+    height: 650px;
+    width: 120%;
+}
+
+.good_accuracy {
+    color: #0EC246;
+}
+
+.normal_accuracy {
+     color: #404040;
+}
+
+.bad_accuracy {
+  color: #DE0613;
+}
+
+/* Стилизация графиков */
+.anychart-input-label, .anychart-credits-logo, .anychart-credits-text {
+    display: none !important;
+}
+
+.anychart-range-selector {
+    position: absolute !important;
+    bottom: 35px !important;
+    left: 60px !important;
+    width: 49.85vw !important;
+    height: 60px !important;
+    background: #F0F0F0 !important;
+    box-shadow: 0px -3px 4px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 0px 0px 20px 20px !important;
+}
+
+
+.anychart-button {
+    width: max-content !important;
+    height: 44px !important;
+    font-family: Montserrat !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+    line-height: 16px !important;
+    color: #000000 !important;
+    border: none !important;
+    margin-inline: 20px !important;
+    padding-inline: 10px!important;
+    margin-top: 8px !important;
+    background: none !important;
+}
+
+.predict .anychart-button{
+     margin-inline: 40px !important;
+}
+
+
+.anychart-button-checked {
+    background: #0EC246 !important;
+    border-radius: 15px !important;
+    color: #F9F9F9 !important;
+}
+
+.ac-fallback-symbol{
+    display: none;
+}
+
+
+/* Сворачивание блоков текста */
+#description_part2, #hide {
+    display: none;
+}
+
+.clickable {
+    cursor: pointer;
+    color: blue;
 }
 
 /* шрифт */

@@ -6,31 +6,54 @@ from ..models.api.api_model import ApiBaseStonksModel
 from .models import ProphetParams
 from ..app_settings import *
 from django.shortcuts import render
+from googletrans import Translator
 
 
 def index(request):
-    stock_tikers = requests.get(FMP_TIKER_LABELS.format(FMP_KEY[4])).json()
     stocks = []
-    for s in stock_tikers[:10]:
-        stock = requests.get(FMP_STOCK_INFO.format(s, FMP_KEY[4])).json()
+    for s in STOCKS_TIKERS[:20]:
+        stock = requests.get(FMP_STOCK_INFO.format(s, FMP_KEY[FMP_KEY_INDEX])).json()
         if not stock:
             continue
         stock = stock[0]
-        company_name = stock.get('companyName')[:18] + "..." if len(stock.get('companyName')) > 21 else stock.get(
-            'companyName')
+
         stocks.append(
-            {'url': stock.get('image'), 'company_name': company_name, 'price': stock.get('price'), 'ticker': s,
+            {'company_name': stock.get('companyName'),
+             'price': stock.get('price'),
+             'ticker': s,
              'absolute_price_change': round(stock.get('changes'), 2),
              'relative_price_change': round(stock.get('changes') / stock.get('price'), 2)})
-    return render(request, 'main/detail_with_list.html', {'stocks': stocks})
+    return render(request, 'list/list.html', {'stocks_table': stocks})
 
 
-def detail(request):
-    ticker = request.GET.get("ticker", "").upper()
-    info = requests.get(FMP_STOCK_INFO.format(ticker, FMP_KEY[4])).json()
-    history_price = requests.get(FRMP_HISTORICal_DATA.format(ticker, FMP_KEY[4])).json().get('historical')
-    data = json.dumps({'info': info, 'historical': history_price})
-    return HttpResponse(data, content_type="application/json")
+def detail(request, ticker):
+    translator = Translator()
+    ticker = ticker.upper()
+    info = requests.get(FMP_STOCK_INFO.format(ticker, FMP_KEY[FMP_KEY_INDEX])).json()
+    description = translator.translate(info[0]['description'], dest='ru', src='en').text
+    country = info[0]['country']
+    sector = translator.translate(info[0]['sector'], dest='ru', src='en').text
+    industry = translator.translate(info[0]['industry'], dest='ru', src='en').text
+    historical_price = requests.get(FRMP_HISTORICal_DATA.format(ticker, FMP_KEY[FMP_KEY_INDEX])).json().get(
+        'historical')
+    forecast, accuracy = get_predict_by_tiker(ticker, "YEAR")
+    if accuracy <= 10:
+        accuracy = '<span class="good_accuracy">'+str(accuracy)+'%</span>'
+    elif accuracy <= 30:
+        accuracy = '<span class="normal_accuracy">' + str(accuracy) + '%</span>'
+    else:
+        accuracy = '<span class="bad_accuracy">' + str(accuracy) + '%</span>'
+    return render(request, 'detail/detail.html', {
+        'ticker': ticker,
+        'description_part1': description[:500],
+        'description_part2': description[500:],
+        'country': country,
+        'sector': sector,
+        'industry': industry,
+        'historical_price': historical_price,
+        'forecast': forecast,
+        'accuracy': accuracy
+    })
 
 
 def predict(request):

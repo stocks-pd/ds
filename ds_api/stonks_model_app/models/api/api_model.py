@@ -1,6 +1,7 @@
 from multiprocessing import Pool
 from ..baseStonksModel import BaseStonksModel
 from ...app_settings import *
+import pandas as pd
 
 
 class ApiBaseStonksModel(BaseStonksModel):
@@ -8,7 +9,6 @@ class ApiBaseStonksModel(BaseStonksModel):
         BaseStonksModel.__init__(self, estimator, api_key)
 
     def fit_predict_transform(self, data, parameters, periods: str, freq="D", include_history=False, to_rec=False):
-        print(periods)
         period_types = {
             "WEEK": WEEK,
             "MONTH": MONTH,
@@ -17,19 +17,21 @@ class ApiBaseStonksModel(BaseStonksModel):
             "YEAR": YEAR
         }
         periods = period_types.get(periods)
-        print(periods)
-        risk = BaseStonksModel.fit_predict(self, data.iloc[periods:], parameters, periods)
-        risk = round(self.get_smape(data.loc[:periods, ['y']].to_numpy(), risk.yhat.to_numpy()), 2)
-        print(risk)
+        smape = BaseStonksModel.fit_predict(self, data.iloc[periods:], parameters, periods)
+        smape = round(self.get_smape(data.loc[:periods, ['y']].to_numpy(), smape.yhat.to_numpy()), 2)
+        print(smape)
         predict = BaseStonksModel.fit_predict(self, data, parameters, periods)
-        predict["risk"] = risk
+        predict['yhat'] = predict['yhat'].apply(round(2))
+        predict['yhat_lower'] = predict['yhat_lower'].apply(round(2))
+        predict['yhat_upper'] = predict['yhat_upper'].apply(round(2))
+        predict['ds'] = predict['ds'].dt.strftime('%Y-%m-%d')
         if to_rec:
             return {
                 'price': predict.loc[-1, ["yhat"]],
                 'risk': predict.loc[-1, ["risk"]]
             }
         else:
-            return predict[['ds', 'yhat', 'yhat_lower', 'yhat_upper', 'risk']].to_json(orient="records")
+            return predict[['ds', 'yhat', 'yhat_lower', 'yhat_upper']].to_json(orient="records"), smape
 
     def double_selection_hyperparameters(self, tiker, periods=QUART):
         best_params = self._complete(tiker, periods)
