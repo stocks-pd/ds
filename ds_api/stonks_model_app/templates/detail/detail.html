@@ -12,13 +12,14 @@
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-stock.min.js"></script>
 <script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
 <script src="https://cdn.anychart.com/csv-data/csco-daily.js"></script>
+<script src="https://cdn.anychart.com/locales/2.0.0/ru-ru.js"></script>
 {% endblock %}
 
 {% block content %}
 
 <div id="main_block" class="detail_block">
-    <h1 align="center">Информация по акции {{ ticker }}</h1>
-    <a class="back" href="/">К акциям</a>
+    <h1 align="center"> <a href="/"><img class="back" src="http://127.0.0.1:8000/static/img/sarrow.svg"></a>Информация по акции {{ ticker }}</h1>
+
     <div id="detail" class="detail">
         <div id="graph" class="graph"></div>
         <div id="info" class="info">
@@ -72,36 +73,31 @@
         var customRanges = [
             {
                 'text': 'Неделя',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 5,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Месяц',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 31,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Квартал',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 31 * 3,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Полгода',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 31 * 6,
                 'anchor': 'last-date'
             },
             {
                 'text': 'Год',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 31 * 6,
                 'anchor': 'last-date'
             },
@@ -158,10 +154,15 @@
         series.stroke('2 black');
         series.fill("WhiteSmoke 1");
 
+         series.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
+
 
         chart.tooltip().titleFormat(function () {
           return anychart.format.dateTime(this.points[0].x, format, timeZoneOffset, locale);
         });
+
 
         chart.tooltip().displayMode('union');
 
@@ -182,29 +183,25 @@
         var customRanges_forecast = [
             {
                 'text': 'Неделя',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 5,
                 'anchor': 'first-date'
             },
             {
                 'text': 'Месяц',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 31,
                 'anchor': 'first-date'
             },
             {
                 'text': 'Квартал',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 31 * 3,
                 'anchor': 'first-date'
             },
             {
                 'text': 'Полгода',
-                'type': 'unit',
-                'unit': 'day',
+                'type': 'points',
                 'count': 31 * 6,
                 'anchor': 'first-date'
             },
@@ -254,14 +251,25 @@
         series_forecast.stroke('2 black');
         series_forecast.fill("WhiteSmoke 1");
 
+         series_forecast.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
+
         series_forecast = chart_forecast.plot(0).line(mapping_forecast_yhat_lower);
         series_forecast.name("Нижняя граница");
         series_forecast.stroke('2 #DE0613');
+
+         series_forecast.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
 
            series_forecast = chart_forecast.plot(0).line(mapping_forecast_yhat_upper);
         series_forecast.name("Верхняя граница");
         series_forecast.stroke('2 #0EC246');
 
+         series_forecast.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
 
         var indicator_forecast = chart_forecast.plot(0).priceIndicator();
         indicator_forecast.axis()
@@ -277,6 +285,7 @@
         });
 
         chart_forecast.tooltip().displayMode('union');
+
 
 
         // set the container id

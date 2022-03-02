@@ -2,7 +2,7 @@ from multiprocessing import cpu_count as cpu_count
 import requests
 
 # API keys
-FMP_KEY_INDEX = 6
+FMP_KEY_INDEX = 1
 FMP_KEY = ['df7afe83903f789adc2f99af26cef1c9',
            "e3b78e56511d7dfdbd8000775c51664c",
            "b0bf65b946c24a87cbd7c605c0bb5239",
@@ -30,7 +30,8 @@ FMP_KEY = ['df7afe83903f789adc2f99af26cef1c9',
            "dbe960a0f368d06c49f2748aa5bcd642",
            "6b574ce345b0fe3370403ac4ae9c07b2",
            "9821c9be1c0c2f131a182998a4c5ff68"]
-ALPHA_KEY = 'ZRMG7N7CVNEFA2RY'
+ALPHA_KEY = 'FKJ82GMNFE5Z1Z7Q'
+ALPHA_KEY2 = 'ZRMG7N7CVNEFA2RY'
 
 # API queries
 # FMP
@@ -39,8 +40,8 @@ FMP_STOCK_INFO = 'https://financialmodelingprep.com/api/v3/profile/{}?apikey={}'
 FRMP_HISTORICal_DATA = 'https://financialmodelingprep.com/api/v3/historical-price-full/{}?serietype=line&apikey={}'
 
 # Alphavantege
-ALPHA_GET_TIKER_HISTORY = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}' \
-                          '&outputsize=full&apikey={}&datatype=csv'
+ALPHA_GET_TIKER_HISTORY = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}&apikey={}&datatype=csv'
+
 
 # Periods of predict
 WEEK = 7

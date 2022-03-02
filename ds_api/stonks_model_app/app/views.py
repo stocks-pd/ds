@@ -10,19 +10,24 @@ from googletrans import Translator
 
 
 def index(request):
+    par = ProphetParams.objects.create()
     stocks = []
-    for s in STOCKS_TIKERS[:20]:
+    for s in STOCKS_TIKERS[:10]:
         stock = requests.get(FMP_STOCK_INFO.format(s, FMP_KEY[FMP_KEY_INDEX])).json()
         if not stock:
             continue
-        stock = stock[0]
 
-        stocks.append(
-            {'company_name': stock.get('companyName'),
-             'price': stock.get('price'),
-             'ticker': s,
-             'absolute_price_change': round(stock.get('changes'), 2),
-             'relative_price_change': round(stock.get('changes') / stock.get('price'), 2)})
+        try:
+            stock = stock[0]
+
+            stocks.append(
+                {'company_name': stock.get('companyName'),
+                 'price': stock.get('price'),
+                 'ticker': s,
+                 'absolute_price_change': round(stock.get('changes'), 2),
+                 'relative_price_change': round(stock.get('changes') / stock.get('price'), 2)})
+        except KeyError:
+            continue
     return render(request, 'list/list.html', {'stocks_table': stocks})
 
 
@@ -30,19 +35,22 @@ def detail(request, ticker):
     translator = Translator()
     ticker = ticker.upper()
     info = requests.get(FMP_STOCK_INFO.format(ticker, FMP_KEY[FMP_KEY_INDEX])).json()
-    description = translator.translate(info[0]['description'], dest='ru', src='en').text
+    # description = translator.translate(info[0]['description'], dest='ru', src='en').text
+    description = info[0]['description']
     country = info[0]['country']
-    sector = translator.translate(info[0]['sector'], dest='ru', src='en').text
-    industry = translator.translate(info[0]['industry'], dest='ru', src='en').text
+    # sector = translator.translate(info[0]['sector'], dest='ru', src='en').text
+    sector = info[0]['sector']
+    # industry = translator.translate(info[0]['industry'], dest='ru', src='en').text
+    industry = info[0]['industry']
     historical_price = requests.get(FRMP_HISTORICal_DATA.format(ticker, FMP_KEY[FMP_KEY_INDEX])).json().get(
         'historical')
     forecast, accuracy = get_predict_by_tiker(ticker, "YEAR")
     if accuracy <= 10:
-        accuracy = '<span class="good_accuracy">'+str(accuracy)+'%</span>'
+        accuracy = '<span class="good_accuracy">' + str(100 - accuracy) + '%</span>'
     elif accuracy <= 30:
-        accuracy = '<span class="normal_accuracy">' + str(accuracy) + '%</span>'
+        accuracy = '<span class="normal_accuracy">' + str(100 - accuracy) + '%</span>'
     else:
-        accuracy = '<span class="bad_accuracy">' + str(accuracy) + '%</span>'
+        accuracy = '<span class="bad_accuracy">' + str(100 - accuracy) + '%</span>'
     return render(request, 'detail/detail.html', {
         'ticker': ticker,
         'description_part1': description[:500],

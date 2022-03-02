@@ -28,6 +28,7 @@ class BaseStonksModel(metaclass=ABCMeta):
         :return:
         """
         query = ALPHA_GET_TIKER_HISTORY.format(company_ticker, api_key)
+        print(query)
         return pd.read_csv(query)
 
     @staticmethod
@@ -37,6 +38,7 @@ class BaseStonksModel(metaclass=ABCMeta):
         :param df:
         :return:
         """
+        print(df)
         newDataFrame = pd.DataFrame(columns=["ds", "y"])
         newDataFrame.ds = pd.to_datetime(df.timestamp)
         newDataFrame.y = df.close

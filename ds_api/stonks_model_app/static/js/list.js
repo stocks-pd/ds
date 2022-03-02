@@ -35,18 +35,21 @@ $(document).ready(function () {
                 data: 'ticker'
             },
             {
-                data: 'price'
+                data: 'price',
+                render: function (data, type, row, meta) {
+                 return data + "$"
+                }
             },
 
             {
                 data: 'absolute_price_change',
                 render: function (data, type, row, meta) {
-                    var absol = data.toFixed(2);
-                    var rel = row['relative_price_change'].toFixed(2);
+                    var absol = data.toFixed(2) < 0 ? data.toFixed(2) : "+" + data.toFixed(2);
+                    var rel = data.toFixed(2) < 0 ? row['relative_price_change'].toFixed(2) : "+" + row['relative_price_change'].toFixed(2);
                     var colour = absol < 0 ? 'red' : 'green'
                     return type === 'display' ?
-                        '<span style="color:' + colour + '">' + absol + ' (' + rel + '%)' + '</span>' :
-                        absol + ' (' + rel + '%)';
+                        '<span style="color:' + colour + '">' + absol + '$ (' + rel + '%)' + '</span>' :
+                        absol + '$ (' + rel + '%)';
                 }
             },
         ]

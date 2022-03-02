@@ -37,12 +37,9 @@ a {
 }
 
 .back {
-    font-family: Montserrat;
-    font-style: normal;
-    font-weight: bold;
-    font-size: 20px;
-    line-height: 12px;
-    text-align: justify;
+    width: 40px;
+    position: relative;
+    left: -170px;
 }
 
 table {
@@ -297,11 +294,11 @@ footer span {
 }
 
 .normal_accuracy {
-     color: #404040;
+    color: #404040;
 }
 
 .bad_accuracy {
-  color: #DE0613;
+    color: #DE0613;
 }
 
 /* Стилизация графиков */
@@ -332,13 +329,13 @@ footer span {
     color: #000000 !important;
     border: none !important;
     margin-inline: 20px !important;
-    padding-inline: 10px!important;
+    padding-inline: 10px !important;
     margin-top: 8px !important;
     background: none !important;
 }
 
-.predict .anychart-button{
-     margin-inline: 40px !important;
+.predict .anychart-button {
+    margin-inline: 40px !important;
 }
 
 
@@ -348,7 +345,7 @@ footer span {
     color: #F9F9F9 !important;
 }
 
-.ac-fallback-symbol{
+.ac-fallback-symbol {
     display: none;
 }
 
