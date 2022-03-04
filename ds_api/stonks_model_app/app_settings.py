@@ -40,8 +40,7 @@ FMP_STOCK_INFO = 'https://financialmodelingprep.com/api/v3/profile/{}?apikey={}'
 FRMP_HISTORICal_DATA = 'https://financialmodelingprep.com/api/v3/historical-price-full/{}?serietype=line&apikey={}'
 
 # Alphavantege
-ALPHA_GET_TIKER_HISTORY = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}&apikey={}&datatype=csv'
-
+ALPHA_GET_TIKER_HISTORY = 'https://www.alphavantage.co/query?function=TIME_SERIES_DAILY&symbol={}&outputsize=full&apikey={}&datatype=csv'
 
 # Periods of predict
 WEEK = 7

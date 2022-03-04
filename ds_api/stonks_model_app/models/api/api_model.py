@@ -19,7 +19,6 @@ class ApiBaseStonksModel(BaseStonksModel):
         periods = period_types.get(periods)
         smape = BaseStonksModel.fit_predict(self, data.iloc[periods:(periods + 365)], parameters, periods)
         smape = round(self.get_smape(data.loc[:periods, ['y']].to_numpy(), smape.yhat.to_numpy()), 2)
-        print(smape)
         predict = BaseStonksModel.fit_predict(self, data[:365], parameters, periods)
         predict['yhat'] = np.round(predict['yhat'], 2)
         predict['yhat_lower'] = np.round(predict['yhat_lower'], 2)
