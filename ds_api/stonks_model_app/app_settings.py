@@ -1,8 +1,10 @@
 from multiprocessing import cpu_count as cpu_count
 import requests
+import sqlite3
+from sqlite3 import Error
 
 # API keys
-FMP_KEY_INDEX = 1
+FMP_KEY_INDEX = 17
 FMP_KEY = ['df7afe83903f789adc2f99af26cef1c9',
            "e3b78e56511d7dfdbd8000775c51664c",
            "b0bf65b946c24a87cbd7c605c0bb5239",
@@ -55,5 +57,29 @@ PERMISSIBLE_CPU_COUNT = CPU_COUNT - 1
 
 # STOCKS
 STOCKS_TIKERS = requests.get(FMP_TIKER_LABELS.format(FMP_KEY[FMP_KEY_INDEX])).json()
+
+# ADDING WORK STOCKS_TICKER IN DATABASE
+# sqlite_connection = sqlite3.connect('db.sqlite3')
+# cursor = sqlite_connection.cursor()
+# print("База данных подключена")
+# i = 0
+# ERROR_TICKER_COUNT = 0
+# for ticker in STOCKS_TIKERS:
+#     i+=1
+#     if i >250:
+#         break
+#     CHECK_TICKER= requests.get(FMP_STOCK_INFO.format(ticker,FMP_KEY[FMP_KEY_INDEX])).json()
+#     ERROR = "Error Message"
+#     FIND_ERROR = ERROR in CHECK_TICKER
+#     if (FIND_ERROR):
+#         ERROR_TICKER_COUNT+=1
+#         print(ERROR_TICKER_COUNT)
+#     else:
+#
+#         cursor.execute("INSERT INTO stock_tickers VALUES  (?)", (ticker,))
+#         sqlite_connection.commit()
+#         cursor.close
+
+
 
 # APIES METHODS

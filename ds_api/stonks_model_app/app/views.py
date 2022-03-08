@@ -11,6 +11,7 @@ from googletrans import Translator
 
 def index(request):
     par = ProphetParams.objects.create()
+
     stocks = []
     for s in STOCKS_TIKERS[:30]:
         stock = requests.get(FMP_STOCK_INFO.format(s, FMP_KEY[FMP_KEY_INDEX])).json()

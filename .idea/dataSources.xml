@@ -7,7 +7,7 @@
       <jdbc-driver>org.postgresql.Driver</jdbc-driver>
       <jdbc-url>jdbc:postgresql://0.0.0.0:5432/stonks</jdbc-url>
     </data-source>
-    <data-source source="LOCAL" name="db.sqlite3" uuid="d02080da-6365-4f5d-8e93-28fd0332db39">
+    <data-source source="LOCAL" name="SQLite - db.sqlite3" uuid="d02080da-6365-4f5d-8e93-28fd0332db39">
       <driver-ref>sqlite.xerial</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>org.sqlite.JDBC</jdbc-driver>
