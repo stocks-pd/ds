@@ -44,14 +44,14 @@ def detail(request, ticker):
     # industry = translator.translate(info[0]['industry'], dest='ru', src='en').text
     industry = info[0]['industry']
     historical_price = requests.get(FRMP_HISTORICal_DATA.format(ticker, FMP_KEY[FMP_KEY_INDEX])).json().get(
-        'historical')
-    forecast, accuracy = get_predict_by_tiker(ticker, "YEAR")
-    if accuracy <= 10:
-        accuracy = '<span class="good_accuracy">' + str(100 - accuracy) + '%</span>'
-    elif accuracy <= 30:
-        accuracy = '<span class="normal_accuracy">' + str(100 - accuracy) + '%</span>'
-    else:
-        accuracy = '<span class="bad_accuracy">' + str(100 - accuracy) + '%</span>'
+        'historical') 
+    # forecast, accuracy = get_predict_by_tiker(ticker, "YEAR")
+    # if accuracy <= 10:
+    #     accuracy = '<span class="good_accuracy">' + str(100 - accuracy) + '%</span>'
+    # elif accuracy <= 30:
+    #     accuracy = '<span class="normal_accuracy">' + str(100 - accuracy) + '%</span>'
+    # else:
+    #     accuracy = '<span class="bad_accuracy">' + str(100 - accuracy) + '%</span>'
     return render(request, 'detail/detail.html', {
         'ticker': ticker,
         'description_part1': description[:500],
@@ -60,8 +60,8 @@ def detail(request, ticker):
         'sector': sector,
         'industry': industry,
         'historical_price': historical_price,
-        'forecast': forecast,
-        'accuracy': accuracy
+        # 'forecast': forecast,
+        # 'accuracy': accuracy
     })
 
 

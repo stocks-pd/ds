@@ -1,8 +1,4 @@
 Django>=3.2.9
-pandas
-numpy
-matplotlib
+googletrans
 requests
 psycopg2
-prophet
-googletrans

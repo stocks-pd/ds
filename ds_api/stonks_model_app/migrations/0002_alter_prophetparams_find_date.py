@@ -11,10 +11,10 @@ class Migration(migrations.Migration):
         ('stonks_model_app', '0001_initial'),
     ]
 
-    operations = [
-        migrations.AlterField(
-            model_name='prophetparams',
-            name='find_date',
-            field=models.DateTimeField(default=datetime.datetime(2021, 12, 10, 15, 34, 0, 179627, tzinfo=utc), verbose_name='Дата подбора параметров'),
-        ),
-    ]
+    # operations = [
+    #     migrations.AlterField(
+    #         model_name='prophetparams',
+    #         name='find_date',
+    #         field=models.DateTimeField(default=datetime.datetime(2021, 12, 10, 15, 34, 0, 179627, tzinfo=utc), verbose_name='Дата подбора параметров'),
+    #     ),
+    # ]
