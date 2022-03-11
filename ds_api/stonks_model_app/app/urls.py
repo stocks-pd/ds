@@ -5,6 +5,7 @@ app_name = 'stonks_model_app'
 urlpatterns = [
     path('', views.index, name='index'),
     path('detail/<str:ticker>', views.detail, name='detail'),
+    path('test', views.test, name='test'),
     # path('predict', views.predict, name='predict'),
     # path('fit', views.fit, name='predict'),
     # path('update_recommendations', views.update_recommendations, name='update_recommendations'),
