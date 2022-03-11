@@ -2,15 +2,15 @@ import requests
 import json
 from django.utils import timezone
 from django.http import HttpResponse
-from ..models.api.api_model import ApiBaseStonksModel
-from .models import ProphetParams
+# from ..models.api.api_model import ApiBaseStonksModel
+# from .models import ProphetParams
 from ..app_settings import *
 from django.shortcuts import render
 from googletrans import Translator
 
 
 def index(request):
-    par = ProphetParams.objects.create()
+    # par = ProphetParams.objects.create()
 
     stocks = []
     for s in STOCKS_TIKERS[:30]:
@@ -65,19 +65,19 @@ def detail(request, ticker):
     })
 
 
-def predict(request):
-    ticker = request.GET.get("ticker", "").upper()
-    periods = request.GET.get("periods", "").upper()
-    predict = get_predict_by_tiker(ticker, periods)
-    return HttpResponse(predict)
+# def predict(request):
+#     ticker = request.GET.get("ticker", "").upper()
+#     periods = request.GET.get("periods", "").upper()
+#     predict = get_predict_by_tiker(ticker, periods)
+#     return HttpResponse(predict)
 
 
-def fit(request):
-    # api_model = ApiBaseStonksModel
-    return HttpResponse("123")
-    # model = LearnStonksModel("POOL")
-    # model.get_best_prediction()
-    # return HttpResponse(True)
+# def fit(request):
+#     # api_model = ApiBaseStonksModel
+#     return HttpResponse("123")
+#     # model = LearnStonksModel("POOL")
+#     # model.get_best_prediction()
+#     # return HttpResponse(True)
 
 
 # def update_recommendations(request):
@@ -93,16 +93,16 @@ def fit(request):
 #     return HttpResponse(tikers)
 
 
-def get_predict_by_tiker(ticker, periods, to_rec=False):
-    api_model = ApiBaseStonksModel()
-    params = ProphetParams.objects.latest('find_date')
-    params = params.get_params()
-    data = api_model.get_data_from_api(ticker, ALPHA_KEY)
-    data = api_model.preprocessing(data)
-    return api_model.fit_predict_transform(data, params, periods, to_rec)
+# def get_predict_by_tiker(ticker, periods, to_rec=False):
+#     api_model = ApiBaseStonksModel()
+#     params = ProphetParams.objects.latest('find_date')
+#     params = params.get_params()
+#     data = api_model.get_data_from_api(ticker, ALPHA_KEY)
+#     data = api_model.preprocessing(data)
+#     return api_model.fit_predict_transform(data, params, periods, to_rec)
 
 
-def update_parameters(request):
-    api_model = ApiBaseStonksModel()
-    params = api_model.double_selection_hyperparameters("POOL")
-    return HttpResponse(params)
+# def update_parameters(request):
+#     api_model = ApiBaseStonksModel()
+#     params = api_model.double_selection_hyperparameters("POOL")
+#     return HttpResponse(params)
