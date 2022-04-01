@@ -31,9 +31,9 @@ def index(request):
             continue
     return render(request, 'list/list.html', {'stocks_table': stocks})
 
-# def test(request): 
-#     res = requests.get('')
-#     return render(request, res)
+def test(request):
+    res = requests.get('')
+    return render(request, res)
 
 def detail(request, ticker):
     translator = Translator()

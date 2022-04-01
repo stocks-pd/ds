@@ -2,10 +2,11 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="2baee1ce-46cf-4271-93be-11959f0ae82e" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources/d02080da-6365-4f5d-8e93-28fd0332db39.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d02080da-6365-4f5d-8e93-28fd0332db39.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/ds_api/stonks_model_app/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/ds_api/stonks_model_app/app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ds_api/stonks_model_app/app_settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/ds_api/stonks_model_app/app_settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/ds_api/stonks_model_app/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/ds_api/stonks_model_app/templates/base.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -14,6 +15,14 @@
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="MarkdownSettingsMigration">
     <option name="stateVersion" value="1" />
@@ -46,6 +55,8 @@
       <workItem from="1646724584102" duration="2877000" />
       <workItem from="1646727661845" duration="4795000" />
       <workItem from="1646745214717" duration="928000" />
+      <workItem from="1648639012818" duration="42000" />
+      <workItem from="1648840491093" duration="1101000" />
     </task>
     <servers />
   </component>
