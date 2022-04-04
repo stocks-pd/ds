@@ -3,10 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="2baee1ce-46cf-4271-93be-11959f0ae82e" name="Changes" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/dataSources.local.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.local.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/dataSources.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/dataSources/d02080da-6365-4f5d-8e93-28fd0332db39.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/dataSources/d02080da-6365-4f5d-8e93-28fd0332db39.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/sqldialects.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/sqldialects.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ds_api/stonks_model_app/app/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/ds_api/stonks_model_app/app/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/ds_api/stonks_model_app/templates/base.html" beforeDir="false" afterPath="$PROJECT_DIR$/ds_api/stonks_model_app/templates/base.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/docker-compose.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/docker-compose.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -36,10 +37,14 @@
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
+    <property name="ChangesTree.GroupingKeys" value="" />
+    <property name="DatabaseDriversLRU" value="sqlite" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="database.data.extractors.current.export.id" value="SQL-Insert-Multirow.sql.groovy" />
+    <property name="import_schema_mapping" value="&lt;schema-mapping&gt;&lt;databases&gt;&lt;list&gt;&lt;schema-mapping-item&gt;&lt;source-data-source-id&gt;d02080da-6365-4f5d-8e93-28fd0332db39&lt;/source-data-source-id&gt;&lt;source-path&gt;schema/&quot;main&quot;&lt;/source-path&gt;&lt;target-data-source-id&gt;c637980a-cab8-41b9-b7b9-4338e35ddfba&lt;/target-data-source-id&gt;&lt;target-path&gt;database/&quot;spra&quot;/schema/&quot;public&quot;&lt;/target-path&gt;&lt;/schema-mapping-item&gt;&lt;/list&gt;&lt;/databases&gt;&lt;/schema-mapping&gt;" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="settings.editor.selected.configurable" value="terminal" />
   </component>
@@ -56,7 +61,9 @@
       <workItem from="1646727661845" duration="4795000" />
       <workItem from="1646745214717" duration="928000" />
       <workItem from="1648639012818" duration="42000" />
-      <workItem from="1648840491093" duration="1101000" />
+      <workItem from="1648840491093" duration="1198000" />
+      <workItem from="1649085963097" duration="968000" />
+      <workItem from="1649087950313" duration="3300000" />
     </task>
     <servers />
   </component>
