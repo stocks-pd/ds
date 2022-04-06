@@ -1,0 +1,16 @@
+{% block stock_block %}
+<div class="block">
+    <table>
+        <tr>
+            <td rowspan="2"><img class="stock_img" src="{{ row.url }}"></td>
+            <td class="stock_company_name">{{ row.name }}</td>
+            <td class="stock_price" colspan="2">{{ row.price }}</td>
+        </tr>
+        <tr>
+            <td class="stock_tiker">{{ row.tiker }}</td>
+            <td class="stock_absolute_price_change">{{ row.absolute_price_change }}</td>
+            <td class="stock_relative_price_change">{{ row.relative_price_change }}</td>
+        </tr>
+    </table>
+</div>
+{% endblock %}}

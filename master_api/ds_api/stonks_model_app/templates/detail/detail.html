@@ -1,0 +1,302 @@
+{% extends 'base.html' %}
+
+{% block css %}
+{{ block.super }}
+<link rel="stylesheet" type="text/css" href="https://cdn.anychart.com/releases/8.11.0/css/anychart-ui.min.css"/>
+{% endblock %}
+
+{% block js %}
+{{ block.super }}
+<script src="http://127.0.0.1:8000/static/js/detail.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-base.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-stock.min.js"></script>
+<script src="https://cdn.anychart.com/releases/v8/js/anychart-ui.min.js"></script>
+<script src="https://cdn.anychart.com/csv-data/csco-daily.js"></script>
+<script src="https://cdn.anychart.com/locales/2.0.0/ru-ru.js"></script>
+{% endblock %}
+
+{% block content %}
+
+<div id="main_block" class="detail_block">
+    <h1 align="center"> <a href="/"><img class="back" src="http://127.0.0.1:8000/static/img/sarrow.svg"></a>Информация по акции {{ ticker }}</h1>
+
+    <div id="detail" class="detail">
+        <div id="graph" class="graph"></div>
+        <div id="info" class="info">
+            <h3>Описание</h3>
+            <p id="company_description_short" class="description">
+                {{ description_part1 }}<span id="dots">...</span> <span id="show"
+                                                                        class="clickable">Развернуть</span>
+                <span id="description_part2">{{ description_part2 }}</span> <span id="hide"
+                                                                                  class="clickable">Свернуть</span>
+            </p>
+            <h3>Параметры</h3>
+            <table class="company_info">
+                <tr>
+                    <td>
+                        Страна:
+                        {{ country }}
+                    </td>
+                    <td>
+                        Индустрия:
+                        {{ industry }}
+
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        Сектор:
+
+                        {{ sector }}
+                    </td>
+                    <td>
+                        Прошлые диведенды:
+
+                        {{ divedents|default:'-' }}
+                    </td>
+
+                </tr>
+
+            </table>
+        </div>
+         <h3>Прогноз</h3>
+         <h4>Точность прогноза: {{accuracy|safe}}</h4>
+
+        <div id="predict" class="predict"></div>
+    </div>
+</div>
+
+
+<script>
+    anychart.onDocumentReady(function () {
+
+        var customRanges = [
+            {
+                'text': 'Неделя',
+                'type': 'points',
+                'count': 5,
+                'anchor': 'last-date'
+            },
+            {
+                'text': 'Месяц',
+                'type': 'points',
+                'count': 31,
+                'anchor': 'last-date'
+            },
+            {
+                'text': 'Квартал',
+                'type': 'points',
+                'count': 31 * 3,
+                'anchor': 'last-date'
+            },
+            {
+                'text': 'Полгода',
+                'type': 'points',
+                'count': 31 * 6,
+                'anchor': 'last-date'
+            },
+            {
+                'text': 'Год',
+                'type': 'points',
+                'count': 31 * 6,
+                'anchor': 'last-date'
+            },
+            {
+                'text': 'Весь период',
+                'type': 'max'
+            },
+        ];
+
+          var format ="dd MMMM yyyy 'г.'";
+		var locale = "ru-ru";
+
+		anychart.format.outputLocale("ru-ru");
+		anychart.format.outputDateTimeFormat("dd MMMM yyyy 'г.'");
+
+		var timeZoneOffset = new Date().getTimezoneOffset();
+
+
+        // set the data
+        var table = anychart.data.table('date');
+        table.addData({{historical_price | safe | escape}})
+
+        // map the data
+        mapping = table.mapAs({'x': 'date', 'value': 'close'});
+
+        // set the chart type
+        var chart = anychart.stock();
+        chart.plot(0).yAxis().enabled(false);
+        chart.plot(0).yAxis().orientation('right');
+        chart.plot(0).xAxis(false);
+        chart.scroller().enabled(false);
+
+        chart.crosshair().yLabel().axisIndex(1);
+        chart.crosshair().xLabel(false);
+
+        var rangeSelector = anychart.ui.rangeSelector();
+        rangeSelector.ranges(customRanges);
+
+
+        var indicator = chart.plot(0).priceIndicator();
+        indicator.axis()
+        indicator.value('last-visible')
+        indicator.stroke("#717171", 1, "1 1");
+        indicator.label().background().fill("White");
+        indicator.label().fontColor("Black");
+        indicator.label().fontSize(20)
+        // set the series type
+        series = chart.plot(0).area(mapping);
+        series.name("Цена");
+
+
+        chart.padding().right(100);
+
+        series.stroke('2 black');
+        series.fill("WhiteSmoke 1");
+
+         series.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
+
+
+        chart.tooltip().titleFormat(function () {
+          return anychart.format.dateTime(this.points[0].x, format, timeZoneOffset, locale);
+        });
+
+
+        chart.tooltip().displayMode('union');
+
+        // set the container id
+        chart.container("graph");
+
+        // initiate drawing the chart
+        chart.draw();
+
+        rangeSelector.render(chart);
+    });
+
+
+</script>
+<script>
+    anychart.onDocumentReady(function () {
+
+        var customRanges_forecast = [
+            {
+                'text': 'Неделя',
+                'type': 'points',
+                'count': 5,
+                'anchor': 'first-date'
+            },
+            {
+                'text': 'Месяц',
+                'type': 'points',
+                'count': 31,
+                'anchor': 'first-date'
+            },
+            {
+                'text': 'Квартал',
+                'type': 'points',
+                'count': 31 * 3,
+                'anchor': 'first-date'
+            },
+            {
+                'text': 'Полгода',
+                'type': 'points',
+                'count': 31 * 6,
+                'anchor': 'first-date'
+            },
+              {
+                'text': 'Год',
+                'type': 'max'
+            },
+        ];
+
+        var format ="dd MMMM yyyy 'г.'";
+		var locale = "ru-ru";
+
+		anychart.format.outputLocale("ru-ru");
+		anychart.format.outputDateTimeFormat("dd MMMM yyyy 'г.'");
+
+		var timeZoneOffset = new Date().getTimezoneOffset();
+
+        // set the data
+        var table_forecast = anychart.data.table('ds');
+        table_forecast.addData({{forecast | safe | escape}})
+
+        // map the data
+        mapping_forecast_yhat = table_forecast.mapAs({'x': 'ds', 'value': 'yhat'});
+        mapping_forecast_yhat_lower = table_forecast.mapAs({'x': 'ds', 'value': 'yhat_lower'});
+        mapping_forecast_yhat_upper = table_forecast.mapAs({'x': 'ds', 'value': 'yhat_upper'});
+
+        // set the chart type
+        var chart_forecast = anychart.stock();
+        chart_forecast.plot(0).yAxis().enabled(false);
+        chart_forecast.plot(0).yAxis().orientation('right');
+        chart_forecast.plot(0).xAxis(false);
+        chart_forecast.scroller().enabled(false);
+
+        chart_forecast.crosshair().yLabel().axisIndex(1);
+        chart_forecast.crosshair().xLabel(false);
+
+        var rangeSelector_forecast = anychart.ui.rangeSelector();
+        rangeSelector_forecast.ranges(customRanges_forecast);
+
+
+        chart_forecast.padding().right(100);
+
+        var series_forecast;
+
+        series_forecast = chart_forecast.plot(0).area(mapping_forecast_yhat);
+        series_forecast.name("Цена");
+        series_forecast.stroke('2 black');
+        series_forecast.fill("WhiteSmoke 1");
+
+         series_forecast.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
+
+        series_forecast = chart_forecast.plot(0).line(mapping_forecast_yhat_lower);
+        series_forecast.name("Нижняя граница");
+        series_forecast.stroke('2 #DE0613');
+
+         series_forecast.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
+
+           series_forecast = chart_forecast.plot(0).line(mapping_forecast_yhat_upper);
+        series_forecast.name("Верхняя граница");
+        series_forecast.stroke('2 #0EC246');
+
+         series_forecast.tooltip().format(function() {
+            return this.seriesName + ": " + this.value + "$";
+        });
+
+        var indicator_forecast = chart_forecast.plot(0).priceIndicator();
+        indicator_forecast.axis()
+        indicator_forecast.value('last-visible')
+        indicator_forecast.stroke("#717171", 1, "1 1");
+        indicator_forecast.label().background().fill("White");
+        indicator_forecast.label().fontColor("Black");
+        indicator_forecast.label().fontSize(20)
+
+
+        chart_forecast.tooltip().titleFormat(function () {
+          return anychart.format.dateTime(this.points[0].x, format, timeZoneOffset, locale);
+        });
+
+        chart_forecast.tooltip().displayMode('union');
+
+
+
+        // set the container id
+        chart_forecast.container("predict");
+
+        // initiate drawing the chart
+        chart_forecast.draw();
+
+        rangeSelector_forecast.render(chart_forecast);
+    });
+
+
+</script>
+{% endblock %}

@@ -1,0 +1,377 @@
+body {
+    margin: 0 !important;
+    height: 100%;
+}
+
+h1 {
+    font-family: MontserratBold;
+    font-weight: 700;
+    font-style: normal;
+    size: 50px;
+    line-height: 16px;
+}
+
+h3 {
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 30px;
+    line-height: 12px;
+    text-align: justify;
+    color: #000000;
+}
+
+h4 {
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 25px;
+    line-height: 12px;
+    text-align: justify;
+    color: #000000;
+}
+
+
+a {
+    text-decoration: none;
+}
+
+.back {
+    width: 40px;
+    position: relative;
+    left: -170px;
+}
+
+table {
+    width: 100%;
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #000000;
+}
+
+
+tr:hover {
+    cursor: pointer;
+    background: #F9F9F9;
+}
+
+header {
+    position: relative;
+    width: 100%;
+    height: 80px;
+    left: 0px;
+    top: 0px;
+    border-bottom: 2px solid #AAA9A9;
+}
+
+footer {
+    width: 100%;
+    text-align: center;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    height: 80px;
+    border-bottom: 2px solid #AAA9A9;
+    background: #F0F0F0;
+}
+
+footer span {
+    position: relative;
+    top: 25px;
+}
+
+.container {
+    width: 70vw;
+    height: max-content;
+    margin: auto;
+}
+
+.logo {
+    position: relative;
+    top: 15px;
+    width: 175px;
+    height: 50px;
+    margin: auto;
+    background: linear-gradient(98.62deg, #0EC246 0%, rgba(14, 194, 70, 0.6) 100%);
+    border-radius: 20px;
+}
+
+.logo span {
+    position: relative;
+    width: 98px;
+    height: 16px;
+    left: 38px;
+    top: 17px;
+
+    font-family: Montserrat;
+    font-style: italic;
+    font-weight: bold;
+    font-size: 34px;
+    line-height: 16px;
+
+    color: #FFFFFF;
+}
+
+.detail_block {
+    height: max-content;
+    width: 70%;
+    margin: auto;
+}
+
+.list {
+    height: 100vh;
+    margin: auto;
+}
+
+
+.block {
+    width: 580px;
+    height: 99px;
+    background: #F0F0F0;
+    border-radius: 30px;
+    margin: auto;
+    margin-bottom: 20px;
+}
+
+.stocks_list {
+    overflow: auto;
+}
+
+.stock_img {
+    width: 80px;
+    height: 80px;
+    background: #AAA9A9;
+    border-radius: 20px;
+    margin: 5px;
+}
+
+.stock_company_name {
+    width: 60%;
+    height: 16px;
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 16px;
+    color: #000000;
+    padding: 10px;
+}
+
+.stock_price {
+    width: 20%;
+    height: 16px;
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: bold;
+    font-size: 20px;
+    line-height: 16px;
+    color: #000000;
+    padding: 10px;
+}
+
+.stock_tiker {
+    width: 45%;
+    height: 16px;
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 16px;
+    color: #717171;
+    padding: 10px;
+}
+
+.stock_price_change_growth {
+    width: 35%;
+    height: 16px;
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 16px;
+    text-align: right;
+    color: #0EC246;
+    padding: 10px;
+}
+
+.stock_price_change_fall {
+    width: 35%;
+    height: 16px;
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: 600;
+    font-size: 20px;
+    line-height: 16px;
+    text-align: right;
+    color: #DE0613;
+    padding: 10px;
+}
+
+
+.button {
+    display: inline-block;
+    width: 270px;
+    height: 60px;
+    background: #F0F0F0;
+    border-radius: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
+.button_active {
+    display: inline-block;
+    width: 270px;
+    height: 60px;
+    border-radius: 30px;
+    margin-left: 10px;
+    margin-right: 10px;
+    background: #0EC246;
+    color: white;
+}
+
+.button span, .button_active span {
+    position: relative;
+    top: 20px;
+    width: 135px;
+    height: 16px;
+    font-family: MontserratBold;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 30px;
+    line-height: 16px;
+    color: #000000;
+}
+
+.info {
+    display: table-cell;
+}
+
+.description {
+    width: 100%;
+    text-align: justify;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 30px;
+    color: #000000;
+}
+
+.company_info {
+    width: max-content;
+    border-spacing: 20px;
+    margin: auto;
+}
+
+.company_info td {
+    background: #F0F0F0;
+    border-radius: 15px;
+    font-family: Montserrat;
+    font-style: normal;
+    font-weight: 500;
+    font-size: 20px;
+    line-height: 12px;
+    text-align: justify;
+    padding: 35px;
+    color: #404040;
+}
+
+.graph, .predict {
+    position: relative;
+    left: -7%;
+    height: 650px;
+    width: 120%;
+}
+
+.good_accuracy {
+    color: #0EC246;
+}
+
+.normal_accuracy {
+    color: #404040;
+}
+
+.bad_accuracy {
+    color: #DE0613;
+}
+
+/* Стилизация графиков */
+.anychart-input-label, .anychart-credits-logo, .anychart-credits-text {
+    display: none !important;
+}
+
+.anychart-range-selector {
+    position: absolute !important;
+    bottom: 35px !important;
+    left: 60px !important;
+    width: 49.85vw !important;
+    height: 60px !important;
+    background: #F0F0F0 !important;
+    box-shadow: 0px -3px 4px rgba(0, 0, 0, 0.05) !important;
+    border-radius: 0px 0px 20px 20px !important;
+}
+
+
+.anychart-button {
+    width: max-content !important;
+    height: 44px !important;
+    font-family: Montserrat !important;
+    font-style: normal !important;
+    font-weight: 600 !important;
+    font-size: 20px !important;
+    line-height: 16px !important;
+    color: #000000 !important;
+    border: none !important;
+    margin-inline: 20px !important;
+    padding-inline: 10px !important;
+    margin-top: 8px !important;
+    background: none !important;
+}
+
+.predict .anychart-button {
+    margin-inline: 40px !important;
+}
+
+
+.anychart-button-checked {
+    background: #0EC246 !important;
+    border-radius: 15px !important;
+    color: #F9F9F9 !important;
+}
+
+.ac-fallback-symbol {
+    display: none;
+}
+
+
+/* Сворачивание блоков текста */
+#description_part2, #hide {
+    display: none;
+}
+
+.clickable {
+    cursor: pointer;
+    color: blue;
+}
+
+/* шрифт */
+@font-face {
+    font-family: "MontserratBold";
+    src: url("/static/fonts/Montserrat/Montserrat-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
+
+/* шрифт */
+@font-face {
+    font-family: "Montserrat";
+    src: url("/static/fonts/Montserrat/Montserrat-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: normal;
+}
