@@ -1,15 +1,22 @@
 version: '3.7'
 
 services:
-  ds:
+  web:
     build: web_ds
-    working_dir: '/ds'
+    working_dir: '/master_web_app'
     command: python manage.py runserver 0.0.0.0:8000
     volumes:
-      - ./ds_api:/ds
+      - ./ds_api:/master_web_app
     ports:
       - '8000:8000'
-
+  api:
+    build: web_ds
+    working_dir: '/master_api'
+    command: python manage.py runserver 0.0.0.0:88
+    volumes:
+      - ./master_api/ds_api:/master_api
+    ports:
+      - '88:88'
 
 
 #    depends_on:

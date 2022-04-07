@@ -4,7 +4,7 @@ import sqlite3
 from sqlite3 import Error
 
 # API keys
-FMP_KEY_INDEX = 1
+FMP_KEY_INDEX = 9
 FMP_KEY = ['df7afe83903f789adc2f99af26cef1c9',
            "e3b78e56511d7dfdbd8000775c51664c",
            "b0bf65b946c24a87cbd7c605c0bb5239",

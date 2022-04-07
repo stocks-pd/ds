@@ -2,6 +2,7 @@ import requests
 import json
 from django.utils import timezone
 from django.http import HttpResponse
+
 # from ..models.api.api_model import ApiBaseStonksModel
 # from .models import ProphetParams
 from ..app_settings import *
@@ -31,8 +32,9 @@ def index(request):
             continue
     return render(request, 'list/list.html', {'stocks_table': stocks})
 
-def test(request):
-    return HttpResponse(requests.get('http://localhost:88/test_predict/TSLA'))
+def test(request, ticker):
+    res = requests.get('http://localhost:88/test_predict/TSLA')
+    return HttpResponse(res)
 
 def detail(request, ticker):
     translator = Translator()
